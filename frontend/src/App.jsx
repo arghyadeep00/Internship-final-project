@@ -16,12 +16,12 @@ const App = () => {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<LandingPage/>} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/applicant-register" element={<Register />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-       
-        {/* protected pages */}
+
+        {/* protected pages for applicant */}
         <Route
           path="user/dashboard"
           element={
@@ -50,7 +50,7 @@ const App = () => {
           path="user/settings"
           element={
             <ProtectedRoute role="user">
-              <Settings/>
+              <Settings />
             </ProtectedRoute>
           }
         />
@@ -62,6 +62,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* protected pages for admin */}
       </Routes>
     </div>
   );

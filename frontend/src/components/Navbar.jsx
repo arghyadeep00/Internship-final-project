@@ -8,7 +8,6 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
- 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -76,9 +75,8 @@ const Navbar = () => {
                 onClick={(e) => {
                   setOpen(false);
                   logout();
-                  
                 }}
-                className="w-full text-left px-4 py-2 text-md text-red-600 hover:bg-red-50"
+                className="w-full text-left px-4 py-2 text-md cursor-pointer text-red-600 hover:bg-red-50"
               >
                 <span className="flex items-center gap-3">
                   <LogOut size={18} /> Logout

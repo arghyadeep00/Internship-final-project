@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
 const ProtectedRoute = ({ children, role }) => {
   const { user, loading, isAuthenticated } = useAuth();
-  console.log(user)
+
   if (loading) return <Loader />;
   if (!user) return <Navigate to="/" />;
 
