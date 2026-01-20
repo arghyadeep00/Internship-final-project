@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { User } from "lucide-react";
 import { Brain } from "lucide-react";
 import { School } from "lucide-react";
-import { File } from 'lucide-react';
+import { File } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -23,9 +23,11 @@ const Profile = () => {
 
         {/* Profile Card */}
         <div className="bg-white rounded-lg p-6 flex items-center gap-6 shadow">
-          <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-semibold text-blue-600">
-            AS
-          </div>
+          <img
+            src={user.avatar || "/user.png"}
+            alt="profile"
+            className="rounded-full w-18 h-18 cursor-pointer"
+          />
 
           <div className="flex-1 roboto">
             <h2 className="text-lg font-semibold">
@@ -125,7 +127,13 @@ const Profile = () => {
         {/* Resume */}
         <div className="bg-white shadow rounded-lg p-6 flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-xl"><div className="flex gap-2 text-gray-800"> <File/>Resume</div></h3>
+            <h3 className="font-semibold text-xl">
+              <div className="flex gap-2 text-gray-800">
+                {" "}
+                <File />
+                Resume
+              </div>
+            </h3>
             <p className="text-sm text-gray-500">
               Upload or update your resume
             </p>
