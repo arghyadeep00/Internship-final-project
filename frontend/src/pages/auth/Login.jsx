@@ -24,7 +24,7 @@ const Login = () => {
     try {
       setLoading(true);
       const response = await api.post("/auth/login", data);
-      setAuthUser(response.data);
+      setAuthUser(response.data.user);
 
       navigate("/user/dashboard");
     } catch (error) {

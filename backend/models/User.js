@@ -32,7 +32,7 @@ const appliedJobSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema(
   {
     firstname: { type: String, required: true, trim: true },
-    middlename: { type: String, trim: true },
+    middlename: { type: String, trim: true, default: null },
     lastname: { type: String, required: true, trim: true },
 
     avatar: String,
@@ -49,6 +49,9 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ["male", "female", "other"],
+    },
+    country: {
+      type: String,
     },
 
     dob: Date,

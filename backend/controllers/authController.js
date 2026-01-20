@@ -83,12 +83,11 @@ export const login = async (req, res) => {
       sameSite: "lax",
       maxAge: 3 * 24 * 60 * 60 * 1000,
     });
-
+    user.password = "";
     res.status(200).json({
       success: true,
       message: "User login success",
-      role: user.role,
-      firstname:user.firstname
+      user,
     });
   } catch (error) {
     console.log(error);
