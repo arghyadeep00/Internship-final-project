@@ -1,23 +1,41 @@
 import mongoose from "mongoose";
 
+const educationSchema = new mongoose.Schema({
+  level: {
+    type: String,
+    enum: ["Class X", "Class XII", "Graduation", "Post Graduation"],
+    required: true,
+  },
+  institution: String,
+  board: String,
+  startDate: Date,
+  endDate: Date,
+  percentage: Number,
+});
+
+const appliedJobSchema = new mongoose.Schema({
+  jobId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Job",
+  },
+  status: {
+    type: String,
+    enum: ["Applied", "Under Review", "Shortlisted", "Rejected"],
+    default: "Applied",
+  },
+  appliedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    firstname: { type: String, required: true, trim: true },
+    middlename: { type: String, trim: true },
+    lastname: { type: String, required: true, trim: true },
 
-    middlename: {
-      type: String,
-      trim: true,
-    },
-
-    lastname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    avatar: String,
 
     email: {
       type: String,
@@ -26,23 +44,32 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    phone: {
+    phone: String,
+
+    gender: {
       type: String,
+      enum: ["male", "female", "other"],
     },
+
+    dob: Date,
 
     password: {
       type: String,
       required: true,
     },
 
-    domain: {
-      type: String,
-    },
+    education: [educationSchema],
+
+    domain: String,
+
+    skills: [String],
 
     resume: {
-      type: String,
-      required: true
+      url: String,
+      uploadedAt: Date,
     },
+
+    appliedJobs: [appliedJobSchema],
 
     isEmailVerified: {
       type: Boolean,

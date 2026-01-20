@@ -24,7 +24,6 @@ const AdminLogin = () => {
       setLoading(true);
       const response = await api.post("/admin/login", data);
       setAuthUser(response.data);
-      console.log(response.data)
       navigate("/user/dashboard");
     } catch (error) {
       toast.error("Login error");

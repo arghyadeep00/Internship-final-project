@@ -1,4 +1,9 @@
 import { NavLink } from "react-router-dom";
+import { House } from "lucide-react";
+import { BriefcaseBusiness } from "lucide-react";
+import { FileUser } from "lucide-react";
+import { UserPen } from "lucide-react";
+import { Settings } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -7,23 +12,32 @@ const Sidebar = () => {
 
       <nav className="px-4 space-y-2">
         {[
-          { name: "Home", path: "/user/dashboard" },
-          { name: "Job Profiles", path: "/user/job-profile" },
-          { name: "Applied Jobs", path: "/user/applied-jobs" },
-          { name: "My Profile", path: "/user/profile" },
-          { name: "Settings", path: "/user/settings" },
+          { icon: <House />, name: "Home", path: "/user/dashboard" },
+          {
+            icon: <BriefcaseBusiness />,
+            name: "Job Profiles",
+            path: "/user/job-profile",
+          },
+          {
+            icon: <FileUser />,
+            name: "Applied Jobs",
+            path: "/user/applied-jobs",
+          },
+          { icon: <UserPen />, name: "My Profile", path: "/user/profile" },
+          { icon: <Settings />, name: "Settings", path: "/user/settings" },
         ].map((item) => (
           <NavLink
-            key={item.name}      
+            key={item.name}
             to={item.path}
             className={({ isActive }) =>
-              `block px-4 py-2 rounded-lg ${
+              `px-4 py-2 rounded-lg flex items-center gap-3 font-semibold ${
                 isActive
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-purple-100 text-purple-600"
+                  : "hover:bg-gray-100 text-gray-500"
               }`
             }
           >
+            {item.icon}
             {item.name}
           </NavLink>
         ))}

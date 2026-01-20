@@ -11,6 +11,7 @@ import LandingPage from "./pages/home/LandingPage";
 import JobProfile from "./pages/user/JobProfile";
 import AppliedJobs from "./pages/user/AppliedJobs";
 import Settings from "./pages/user/Settings";
+import PageNotFound from "./components/pageNotFound";
 
 const App = () => {
   return (
@@ -64,6 +65,18 @@ const App = () => {
         />
 
         {/* protected pages for admin */}
+
+        {/* <Route
+          path="admin/settings"
+          element={
+            <ProtectedRoute role="admin">
+              <Settings />
+            </ProtectedRoute>
+          }
+        /> */}
+
+        {/* 404 page */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </div>
   );
