@@ -6,22 +6,36 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    department: {
+      type: String,
+    },
+    jobType: {
+      type: String,
+      required: true,
+    },
+    experience: {
+      type: Number,
+    },
+    location: {
+      type: String,
+    },
+    numberOfOpening: {
+      type: Number,
+    },
     description: {
       type: String,
       required: true,
     },
     skills: [String],
-    location: String,
-    type: {
-      type: String,
-      enum: ["Internship", "Full-time"],
+    closingDate: {
+      type: Date,
     },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Job", jobSchema);

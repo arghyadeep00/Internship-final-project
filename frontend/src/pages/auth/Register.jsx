@@ -59,7 +59,7 @@ const Register = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      
+
       reset();
       toast.success(response.data.message);
     } catch (error) {
@@ -424,7 +424,6 @@ const Register = () => {
                 {loading ? "Creating Account...." : "Create Account"}
               </button>
             </form>
-            
 
             {/* Footer */}
             <p className="text-center text-gray-600 mt-8">

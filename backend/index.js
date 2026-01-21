@@ -8,6 +8,7 @@ import applicationRoutes from "./routes/applicationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
 import conn from "./config/db.js";
+import jobRoutes from "./routes/jobRoutes.js";
 
 dotenv.config();
 
@@ -24,8 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", otpRoutes);
-
-
+app.use("/api", jobRoutes);
 
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
