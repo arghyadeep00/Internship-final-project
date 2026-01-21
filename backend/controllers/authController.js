@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import Admin from "../models/Admin.js";
 import jwt from "jsonwebtoken";
 import uploadPdfToCloudinary from "../utils/uploadToCloudinary.js";
 
@@ -101,18 +102,32 @@ export const logout = (req, res) => {
 };
 export const authMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
+    if (req.user.role === "user") {
+      const user = await User.findById(req.user.id).select("-password");
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        user,
       });
     }
-    return res.status(200).json({
-      success: true,
-      user,
-    });
+    if (req.user.role === "admin") {
+      const user = await Admin.findById(req.user.id).select("-password");
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        user,
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Server error" });

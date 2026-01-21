@@ -1,7 +1,7 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import StatCard from '../../components/StatCard'
 
-const Dashboard = () => {
+const UserDashboard = () => {
   return (
     <DashboardLayout>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -44,4 +44,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;
