@@ -49,3 +49,7 @@
 .borel {
   font-family: "Borel", cursive;
 }
+
+button{
+  cursor: pointer;
+}

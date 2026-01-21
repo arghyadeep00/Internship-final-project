@@ -1,10 +1,11 @@
 import express from "express";
-import { postJob } from "../controllers/jobController.js";
+import { allJobs, postJob } from "../controllers/jobController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import adminMiddleware from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
 router.post("/job/post-job", authMiddleware, adminMiddleware, postJob);
+router.get("/job/all-jobs", authMiddleware, adminMiddleware, allJobs);
 
 export default router;

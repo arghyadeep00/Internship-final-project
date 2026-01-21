@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import { useAdminGlobal } from "../../context/AdminContext";
 
 const JobManagement = () => {
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const { jobs, fetchJobs } = useAdminGlobal();
 
   const {
     register,
@@ -14,15 +17,21 @@ const JobManagement = () => {
     reset,
     formState: { errors },
   } = useForm();
-  
+
   // post new job
   const onSubmit = async (data) => {
     try {
       const response = await api.post("/job/post-job", data);
-      reset()
+      reset();
       toast.success(response.data.message);
-    } catch (error) {}
+      fetchJobs();
+      setShowForm(false);
+    } catch (error) {
+      toast.error("Can't post job");
+    }
   };
+
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -96,6 +105,7 @@ const JobManagement = () => {
                   <option value="fulltime">Full time</option>
                   <option value="parttime">Part time</option>
                   <option value="remote">Remote</option>
+                  <option value="internship">Internship</option>
                 </select>
                 {errors.jobtype && (
                   <p className="text-sm text-red-500 mt-1">
@@ -213,53 +223,50 @@ const JobManagement = () => {
 
       {/* Job Listings */}
       <div className="bg-white rounded-md shadow-sm overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm text-center">
           <thead className="border-b border-gray-300 bg-gray-50">
-            <tr className="text-left text-gray-600">
+            <tr className="text-gray-600">
               <th className="px-4 py-3">Job Title</th>
               <th className="px-4 py-3">Department</th>
               <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3">Location</th>
               <th className="px-4 py-3">Openings</th>
+              <th className="px-4 py-3">Experience</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td className="px-4 py-3">Frontend Developer</td>
-              <td>Engineering</td>
-              <td>Full Time</td>
-              <td>Remote</td>
-              <td>3</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                  Active
-                </span>
-              </td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">Edit</button>
-                <button className="text-red-600 hover:underline">Close</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="px-4 py-3">Backend Developer</td>
-              <td>Engineering</td>
-              <td>Internship</td>
-              <td>Bangalore</td>
-              <td>2</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-gray-200 text-gray-700">
-                  Closed
-                </span>
-              </td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">Edit</button>
-                <button className="text-green-600 hover:underline">Open</button>
-              </td>
-            </tr>
+            {jobs.map((e) => (
+              <tr key={e._id}>
+                <td className="px-4 py-3">{e?.title}</td>
+                <td className="px-4 py-3">{e.department || "-"}</td>
+                <td className="px-4 py-3">{e?.jobType}</td>
+                <td className="px-4 py-3">{e?.location}</td>
+                <td className="px-4 py-3">{e?.numberOfOpening}</td>
+                <td className="px-4 py-3">{e?.experience || "-"}</td>
+                <td className="px-4 py-3">
+                  {new Date(e?.closingDate) < new Date() ? (
+                    <span className="inline-block px-2 py-1 text-xs rounded bg-red-100 text-red-700">
+                      Closed
+                    </span>
+                  ) : (
+                    <span className="inline-block px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                      Open
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-3 space-x-2">
+                  <button className="text-blue-600 hover:underline">
+                    Edit
+                  </button>
+                  <button className="text-red-600 hover:underline">
+                    Close
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

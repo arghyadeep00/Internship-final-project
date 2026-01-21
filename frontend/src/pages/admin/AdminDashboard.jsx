@@ -1,7 +1,9 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { Users, FileText, CheckCircle, XCircle } from "lucide-react";
+import { useAdminGlobal } from "../../context/AdminContext";
 
 const AdminDashboard = () => {
+  const { applicants } = useAdminGlobal();
   return (
     <DashboardLayout>
       {/* Page Title */}
@@ -21,7 +23,7 @@ const AdminDashboard = () => {
             <Users className="text-blue-600" />
             <div>
               <p className="text-sm text-gray-500">Total Applications</p>
-              <h2 className="text-xl font-semibold">120</h2>
+              <h2 className="text-xl font-semibold">{applicants.length}</h2>
             </div>
           </div>
         </div>

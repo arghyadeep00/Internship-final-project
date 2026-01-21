@@ -1,5 +1,6 @@
 import Job from "../models/Job.js";
 
+// function for new job post
 export const postJob = async (req, res) => {
   const {
     jobtitle,
@@ -27,7 +28,7 @@ export const postJob = async (req, res) => {
         message: "Requre this fileds",
       });
     }
-
+    // store data in db
     await Job.create({
       title: jobtitle,
       department: department,
@@ -46,5 +47,25 @@ export const postJob = async (req, res) => {
       success: true,
       message: "Job post successfylly",
     });
-  } catch (error) {}
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+// fetch all posted jobs
+
+export const allJobs = async (req, res) => {
+  try {
+    const resultData = await Job.find({});
+    return res.status(200).json({
+      success: true,
+      resultData,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
 };

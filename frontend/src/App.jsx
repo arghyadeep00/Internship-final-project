@@ -20,6 +20,7 @@ import Settings from "./pages/user/Settings";
 import PageNotFound from "./components/pageNotFound";
 import Unauthorized from "./components/Unauthorized";
 import Applications from "./pages/admin/Applications";
+import AdminLayout from "./layouts/AdminLayout";
 
 const App = () => {
   return (
@@ -74,64 +75,15 @@ const App = () => {
         />
 
         {/* protected pages for admin */}
-
-        <Route
-          path="admin/dashboard"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/applications"
-          element={
-            <ProtectedRoute role="admin">
-              <Applications />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/shortlisted"
-          element={
-            <ProtectedRoute role="admin">
-              <Shortlisted />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/interviews"
-          element={
-            <ProtectedRoute role="admin">
-              <Interviews />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/hired"
-          element={
-            <ProtectedRoute role="admin">
-              <Hired />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/job-management"
-          element={
-            <ProtectedRoute role="admin">
-              <JobManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="admin/email-templates"
-          element={
-            <ProtectedRoute role="admin">
-              <EmailTemplates />
-            </ProtectedRoute>
-          }
-        />
-        
+        <Route path="admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="applications" element={<Applications />} />
+          <Route path="shortlisted" element={<Shortlisted />} />
+          <Route path="interviews" element={<Interviews />} />
+          <Route path="hired" element={<Hired />} />
+          <Route path="job-management" element={<JobManagement />} />
+          <Route path="email-templates" element={<EmailTemplates />} />
+        </Route>
         {/* 404 page */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>

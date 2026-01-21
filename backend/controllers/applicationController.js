@@ -1,5 +1,5 @@
 import Application from "../models/Application.js";
-
+import User from "../models/User.js";
 /* SUBMIT APPLICATION */
 export const submitApplication = async (req, res) => {
   try {
@@ -17,11 +17,14 @@ export const submitApplication = async (req, res) => {
   }
 };
 
-/* GET MY APPLICATIONS */
-export const getMyApplications = async (req, res) => {
+// get all applicants
+export const allApplicants = async (req, res) => {
   try {
-    const applications = await Application.find({ user: req.user.id });
-    res.status(200).json(applications);
+    const response = await User.find({}, "-password");
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
