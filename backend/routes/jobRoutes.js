@@ -6,6 +6,6 @@ import adminMiddleware from "../middleware/adminMiddleware.js";
 const router = express.Router();
 
 router.post("/job/post-job", authMiddleware, adminMiddleware, postJob);
-router.get("/job/all-jobs", authMiddleware, adminMiddleware, allJobs);
+router.get("/job/all-jobs", allJobs);
 
 export default router;

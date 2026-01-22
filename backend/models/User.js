@@ -1,17 +1,20 @@
 import mongoose from "mongoose";
 
-const educationSchema = new mongoose.Schema({
-  level: {
-    type: String,
-    enum: ["Class X", "Class XII", "Graduation", "Post Graduation"],
-    required: true,
+const educationSchema = new mongoose.Schema(
+  {
+    level: {
+      type: String,
+      enum: ["Class X", "Class XII", "Graduation", "Post Graduation"],
+      required: true,
+    },
+    institution: String,
+    board: String,
+    startDate: Date,
+    endDate: Date,
+    percentage: Number,
   },
-  institution: String,
-  board: String,
-  startDate: Date,
-  endDate: Date,
-  percentage: Number,
-});
+  { _id: false },
+);
 
 const appliedJobSchema = new mongoose.Schema({
   jobId: {
@@ -50,7 +53,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female", "other"],
     },
-    country: {
+    location: {
       type: String,
     },
 
