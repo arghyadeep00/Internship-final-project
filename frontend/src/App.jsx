@@ -21,6 +21,7 @@ import PageNotFound from "./components/pageNotFound";
 import Unauthorized from "./components/Unauthorized";
 import Applications from "./pages/admin/Applications";
 import AdminLayout from "./layouts/AdminLayout";
+import UserLayout from "./layouts/UserLayout";
 
 const App = () => {
   return (
@@ -33,46 +34,14 @@ const App = () => {
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* protected pages for applicant */}
-        <Route
-          path="user/dashboard"
-          element={
-            <ProtectedRoute role="user">
-              <UserDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="user/job-profile"
-          element={
-            <ProtectedRoute role="user">
-              <JobProfile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="user/applied-jobs"
-          element={
-            <ProtectedRoute role="user">
-              <AppliedJobs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="user/settings"
-          element={
-            <ProtectedRoute role="user">
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="user/profile"
-          element={
-            <ProtectedRoute role="user">
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
+
+        <Route path="user" element={<UserLayout />}>
+          <Route path="dashboard" element={<UserDashboard />} />
+          <Route path="job-profile" element={<JobProfile />} />
+          <Route path="applied-jobs" element={<AppliedJobs />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
 
         {/* protected pages for admin */}
         <Route path="admin" element={<AdminLayout />}>

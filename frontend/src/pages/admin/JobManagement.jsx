@@ -102,10 +102,10 @@ const JobManagement = () => {
                   <option value="" disabled>
                     Select a Job type
                   </option>
-                  <option value="fulltime">Full time</option>
-                  <option value="parttime">Part time</option>
-                  <option value="remote">Remote</option>
-                  <option value="internship">Internship</option>
+                  <option value="Full Time">Full time</option>
+                  <option value="Part Time">Part time</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Internship">Internship</option>
                 </select>
                 {errors.jobtype && (
                   <p className="text-sm text-red-500 mt-1">

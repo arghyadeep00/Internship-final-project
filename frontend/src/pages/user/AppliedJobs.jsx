@@ -1,41 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
-
-const appliedJobs = [
-  {
-    id: 1,
-    title: "Analyst Trainee",
-    company: "Cognizant",
-    location: "PAN India",
-    appliedOn: "10 Jan 2026",
-    status: "Under Review",
-  },
-  {
-    id: 2,
-    title: "Graduate Engineer Trainee",
-    company: "Capgemini",
-    location: "Noida",
-    appliedOn: "05 Jan 2026",
-    status: "Shortlisted",
-  },
-  {
-    id: 3,
-    title: "WILP Program",
-    company: "Wipro",
-    location: "PAN India",
-    appliedOn: "20 Dec 2025",
-    status: "Applied",
-  },
-];
+import { useUserGlobal } from "../../context/UserContext";
 
 const statusColor = {
-  Applied: "bg-blue-100 text-blue-600",
+  Pending: "bg-blue-100 text-blue-600",
   "Under Review": "bg-yellow-100 text-yellow-700",
   Shortlisted: "bg-green-100 text-green-700",
   Rejected: "bg-red-100 text-red-600",
 };
 
 const AppliedJobs = () => {
+
+  const { appliedJobs } = useUserGlobal();
+
+  useEffect(() => {
+    console.log(appliedJobs);
+  }, [appliedJobs]);
+
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -45,31 +26,38 @@ const AppliedJobs = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-lg overflow-hidden shadow-xl">
+        <div className="bg-white rounded-lg overflow-hidden shadow">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-[15px] text-gray-900 border-b border-gray-300 robot">
               <tr>
                 <th className="text-left p-4">Job Title</th>
+                <th className="text-left p-4">Job Type</th>
+                <th className="text-left p-4">Location</th>
 
                 <th className="text-left p-4">Applied On</th>
+                <th className="text-left p-4">Closing Date</th>
                 <th className="text-left p-4">Status</th>
                 <th className="text-left p-4">Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {appliedJobs.map((job) => (
+              {appliedJobs.map((jobs) => (
                 <tr
-                  key={job.id}
+                  key={jobs._id}
                   className="border-b border-gray-300 text-[16px] text-gray-700 last:border-0 roboto-flex"
                 >
-                  <td className="p-4 font-medium">{job.title}</td>
-                  <td className="p-4">{job.appliedOn}</td>
+                  <td className="p-4 font-medium">{jobs?.job?.title}</td>
+                  <td className="p-4 font-medium">{jobs?.job?.jobType}</td>
+                  <td className="p-4 font-medium">{jobs?.job?.location}</td>
+                  <td className="p-4">{new Date(jobs?.createdAt).toLocaleDateString("en-In")}</td>
+                  <td className="p-4">{new Date(jobs?.job?.closingDate).toLocaleDateString("en-In")}</td>
+                 
                   <td className="p-4">
                     <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${statusColor[job.status]}`}
+                      className={`px-2 py-1 rounded text-xs font-medium ${statusColor[jobs.status]}`}
                     >
-                      {job.status}
+                      {jobs.status}
                     </span>
                   </td>
                   <td className="p-4">

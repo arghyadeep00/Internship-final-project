@@ -26,9 +26,10 @@ const JobProfile = () => {
   };
   const applyJob = async (id) => {
     try {
-      
+      const response = await api.post("/job/apply-job", { id });
+      toast.success(response.data.message);
     } catch (error) {
-      
+      toast.error("Can't post job");
     }
   };
 

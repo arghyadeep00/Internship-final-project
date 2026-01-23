@@ -1,5 +1,5 @@
 import Job from "../models/Job.js";
-
+import Application from "../models/Application.js";
 // function for new job post
 export const postJob = async (req, res) => {
   const {
@@ -76,7 +76,37 @@ export const applyJob = async (req, res) => {
   try {
     const userId = req.user.id;
     const jobId = req.body.id;
+
+    await Application.create({
+      user: userId,
+      job: jobId,
+    });
+    return res.status(201).json({
+      success: true,
+      message: "application successfully",
+    });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const fetchAppliedJobs = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const response = await Application.find({ user: userId }).populate(
+      "job",
+      "title department jobType experience description location numberOfOpening closingDate createdAt",
+    );
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
