@@ -43,11 +43,12 @@ export const profile = async (req, res) => {
 };
 export const personal = async (req, res) => {
   try {
-    const { phone, gender, location } = req.body;
+    const { phone, gender, dob, location } = req.body;
     const updateFields = {};
-    console.log(location);
+
     if (phone !== undefined) updateFields.phone = phone;
     if (gender !== undefined) updateFields.gender = gender;
+    if (dob !== undefined) updateFields.dob = dob;
     if (location !== undefined) updateFields.location = location;
 
     if (Object.keys(updateFields).length === 0) {
@@ -75,10 +76,11 @@ export const personal = async (req, res) => {
 };
 export const skills = async (req, res) => {
   try {
-    const { skills } = req.body;
+    const { skills, experience } = req.body;
     const updateFields = {};
     updateFields.skills = skills;
-    console.log(skills);
+    updateFields.experience = experience;
+
     await User.findByIdAndUpdate(
       req.user.id,
       { $set: updateFields },

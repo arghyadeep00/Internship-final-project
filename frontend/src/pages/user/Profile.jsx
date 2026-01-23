@@ -3,10 +3,9 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { SquarePen } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { User } from "lucide-react";
-import { Brain } from "lucide-react";
-import { School } from "lucide-react";
+import { Brain, School, File, Code } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { File } from "lucide-react";
+
 import api from "../../services/api";
 
 const Profile = () => {
@@ -35,10 +34,14 @@ const Profile = () => {
       setPersonalForm({
         phone: user.phone || "",
         gender: user.gender || "",
+        dob: user.dob || "",
         location: user.location || "",
       });
 
-      setSkillsForm({ skills: user.skills?.join(", ") || "" });
+      setSkillsForm({
+        skills: user.skills?.join(", ") || "",
+        experience: user.experience,
+      });
 
       setEducationForm(
         user.education || {
@@ -165,6 +168,16 @@ const Profile = () => {
                 </span>
               </div>
               <div className="flex justify-between">
+                <span className="text-gray-500">Date of Birth</span>
+                <span>
+                  {new Date(user?.dob).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }) || "-"}
+                </span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-gray-500">Location</span>
                 <span>{user?.location}</span>
               </div>
@@ -197,6 +210,10 @@ const Profile = () => {
                 </span>
               ))}
             </div>
+            <div className="mt-6 flex justify-between px-2">
+              <p className="text-gray-500">Experience</p>
+              <p>{user?.experience || 0} Year</p>
+            </div>
           </div>
         </div>
 
@@ -218,7 +235,10 @@ const Profile = () => {
             </div>
           </div>
           {user?.education?.map((e) => (
-            <div className="space-y-2 mt-3 border p-2 rounded border-gray-100 shadow" key={e.level}>
+            <div
+              className="space-y-2 mt-3 border p-2 rounded border-gray-100 shadow"
+              key={e.level}
+            >
               <p className="font-medium">{e.level}</p>
               <div className="flex justify-between">
                 <p className="font-medium">{e.board}</p>
@@ -249,7 +269,9 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer">
+          <div className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer font-bold"
+           onClick={() => window.open(user?.resume, "_blank")}
+          >
             Preview Resume
           </div>
         </div>
@@ -359,6 +381,19 @@ const Profile = () => {
                 <option value="female">Female</option>
                 <option value="other">Other</option>
               </select>
+              {/* date of birth */}
+              <input
+                type="date"
+                name="dob"
+                value={personalForm.dob || ""}
+                onChange={(e) =>
+                  setPersonalForm({ ...personalForm, dob: e.target.value })
+                }
+                className="w-full px-4 py-2 rounded-lg border border-gray-300
+             focus:outline-none focus:ring-1 focus:ring-purple-500
+             focus:border-purple-500 text-gray-700"
+              />
+
               {/* location */}
               <input
                 className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-300 focus:ring-purple-500 focus:border-purple-500"
@@ -411,6 +446,15 @@ const Profile = () => {
                 value={skillsForm.skills}
                 onChange={(e) =>
                   setSkillsForm({ ...skillsForm, skills: e.target.value })
+                }
+              />
+              <input
+                type="number"
+                className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+                placeholder="Enter your experience year"
+                value={skillsForm.experience}
+                onChange={(e) =>
+                  setSkillsForm({ ...skillsForm, experience: e.target.value })
                 }
               />
             </div>

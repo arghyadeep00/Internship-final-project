@@ -67,6 +67,8 @@ const userSchema = new mongoose.Schema(
     education: [educationSchema],
 
     domain: String,
+    
+    experience: Number,
 
     skills: [String],
 

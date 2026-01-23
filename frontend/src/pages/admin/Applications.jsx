@@ -1,13 +1,11 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useAdminGlobal } from "../../context/AdminContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { File } from "lucide-react";
 
 const Applications = () => {
   const { applications } = useAdminGlobal();
-  useEffect(() => {
-    console.log(applications);
-  }, [applications]);
+  const [editStatus, setEditStatus] = useState(false);
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -67,7 +65,10 @@ const Applications = () => {
 
             <tbody>
               {applications.map((e) => (
-                <tr key={e._id} className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50">
+                <tr
+                  key={e._id}
+                  className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50"
+                >
                   <td className="px-4 py-3">{e?.user?.firstname}</td>
                   <td>{e?.user?.email}</td>
                   <td>{e?.user?.domain}</td>
@@ -91,7 +92,10 @@ const Applications = () => {
                     })}
                   </td>
                   <td className="space-x-2">
-                    <button className="text-green-600 hover:underline">
+                    <button
+                      className="text-green-600 hover:underline"
+                      onClick={() => setEditStatus(true)}
+                    >
                       Update
                     </button>
                   </td>
@@ -110,6 +114,22 @@ const Applications = () => {
         </button>
         <button className="px-4 py-2  rounded-lg text-sm">Next</button>
       </div>
+
+      {/* update status */}
+      {editStatus && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+          onClick={()=>setEditStatus(false)}
+          />
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Update Status
+            </h2>
+            
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

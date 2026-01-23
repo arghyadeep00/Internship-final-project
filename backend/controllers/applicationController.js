@@ -36,7 +36,7 @@ export const applications = async (req, res) => {
     const response = await Application.find()
       .populate(
         "user",
-        "firstname middlename lastname email phone domain skills resume",
+        "firstname middlename lastname email phone domain skills resume experience",
       )
       .populate(
         "job",
@@ -51,3 +51,12 @@ export const applications = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+export const updateStatus = async(req,res)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}

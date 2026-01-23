@@ -54,7 +54,7 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-white shadow-lg hidden md:block">
       <div className="p-6 text-xl font-bold text-blue-600">
-        {menu[user?.role === "user"] ? "Applicant Panel" : "Admin Panel"}
+        {user?.role == "user" ? "Applicant Panel" : "Admin Panel"}
       </div>
 
       <nav className="px-4 space-y-2">
