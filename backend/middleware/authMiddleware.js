@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-const authMiddleware = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   const token =
     req.cookies?.token ||
     req.headers.authorization?.split(" ")[1] ||
@@ -21,4 +21,11 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-export default authMiddleware;
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+    next();
+  };
+};

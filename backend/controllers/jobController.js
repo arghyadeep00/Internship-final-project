@@ -69,3 +69,14 @@ export const allJobs = async (req, res) => {
       .json({ success: false, message: "Internal server error" });
   }
 };
+
+// apply new job
+
+export const applyJob = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const jobId = req.body.id;
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};

@@ -1,7 +1,6 @@
 import express from "express";
 import User from "../models/User.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import userMiddleware from "../middleware/userMiddleware.js";
+import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 import {
   avatar,
   education,
@@ -12,11 +11,11 @@ import {
 } from "../controllers/userController.js";
 const router = express.Router();
 
-router.put("/avatar", authMiddleware, userMiddleware, avatar);
-router.put("/profile", authMiddleware, userMiddleware, profile);
-router.put("/personal", authMiddleware, userMiddleware, personal);
-router.put("/skills", authMiddleware, userMiddleware, skills);
-router.put("/education", authMiddleware, userMiddleware, education);
-router.put("/resume", authMiddleware, userMiddleware, resume);
+router.put("/avatar", verifyToken, authorize("user"), avatar);
+router.put("/profile", verifyToken, authorize("user"), profile);
+router.put("/personal", verifyToken, authorize("user"), personal);
+router.put("/skills", verifyToken, authorize("user"), skills);
+router.put("/education", verifyToken, authorize("user"), education);
+router.put("/resume", verifyToken, authorize("user"), resume);
 
 export default router;

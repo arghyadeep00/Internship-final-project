@@ -5,9 +5,7 @@ import {
   getAllApplications,
   updateApplicationStatus,
 } from "../controllers/adminController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import adminMiddleware from "../middleware/adminMiddleware.js";
-
+import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // registration admin
@@ -17,15 +15,15 @@ router.post('/login',adminLogin)
 
 router.get(
   "/applications",
-  authMiddleware,
-  adminMiddleware,
+  verifyToken,
+  authorize("admin"),
   getAllApplications,
 );
 
 router.put(
   "/applications/:id/status",
-  authMiddleware,
-  adminMiddleware,
+  verifyToken,
+  authorize("admin"),
   updateApplicationStatus,
 );
 

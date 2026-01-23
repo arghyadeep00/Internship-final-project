@@ -24,6 +24,13 @@ const JobProfile = () => {
       setLoading(false);
     }
   };
+  const applyJob = async (id) => {
+    try {
+      
+    } catch (error) {
+      
+    }
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -119,7 +126,9 @@ const JobProfile = () => {
                   </button>
                 </div>
                 <div className="px-3 py-2 mt-3 rounded bg-purple-500 font-semibold text-white hover:bg-purple-600">
-                  <button>Apply now</button>
+                  <button onClick={() => applyJob(selectedJob._id)}>
+                    Apply now
+                  </button>
                 </div>
               </div>
 
