@@ -341,11 +341,11 @@ const Register = () => {
                   <option value="" disabled>
                     Select a domain
                   </option>
-                  <option value="frontend">Front End Web Development</option>
-                  <option value="fullStack">Full Stack Web Development</option>
-                  <option value="app">App Development</option>
-                  <option value="aiml">AI / ML</option>
-                  <option value="dataScience">
+                  <option value="Frontend">Front End Web Development</option>
+                  <option value="Full Stack">Full Stack Web Development</option>
+                  <option value="App">App Development</option>
+                  <option value="AI/ML">AI / ML</option>
+                  <option value="Data Science">
                     Data Science / Data Analytics
                   </option>
                   <option value="uiux">UI / UX</option>

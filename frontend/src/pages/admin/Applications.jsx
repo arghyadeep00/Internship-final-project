@@ -1,7 +1,13 @@
-import React from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
+import { useAdminGlobal } from "../../context/AdminContext";
+import { useEffect } from "react";
+import { File } from "lucide-react";
 
 const Applications = () => {
+  const { applications } = useAdminGlobal();
+  useEffect(() => {
+    console.log(applications);
+  }, [applications]);
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -17,10 +23,10 @@ const Applications = () => {
         <input
           type="text"
           placeholder="Search by name or email"
-          className=" rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
         />
 
-        <select className=" rounded-lg px-4 py-2 text-sm">
+        <select className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500">
           <option>Status</option>
           <option>Pending</option>
           <option>Shortlisted</option>
@@ -28,73 +34,72 @@ const Applications = () => {
           <option>Rejected</option>
         </select>
 
-        <select className=" rounded-lg px-4 py-2 text-sm">
+        <select className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500">
           <option>Job Role</option>
           <option>Frontend Developer</option>
           <option>Backend Developer</option>
           <option>Full Stack Developer</option>
         </select>
 
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm hover:bg-blue-700">
+        <button className="bg-purple-600 font-semibold text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">
           Filter
         </button>
       </div>
 
       {/* Applications Table */}
       <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className=" bg-gray-50">
-            <tr className="text-left text-gray-600">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Experience</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Applied On</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
+        {applications.length == 0 ? (
+          <div className="text-center p-4">No applicant present</div>
+        ) : (
+          <table className="w-full text-sm border-collapse">
+            <thead className=" bg-gray-50">
+              <tr className="text-center text-gray-600">
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">Domin</th>
+                <th className="px-4 py-3">Resume</th>
+                <th className="px-4 py-3">Experience</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Applied On</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            <tr className="">
-              <td className="px-4 py-3">Rahul Sharma</td>
-              <td>rahul@gmail.com</td>
-              <td>Frontend Developer</td>
-              <td>2 Years</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
-                  Pending
-                </span>
-              </td>
-              <td>21 Jan 2026</td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">View</button>
-                <button className="text-green-600 hover:underline">
-                  Update
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="px-4 py-3">Ananya Das</td>
-              <td>ananya@gmail.com</td>
-              <td>Backend Developer</td>
-              <td>3 Years</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                  Shortlisted
-                </span>
-              </td>
-              <td>20 Jan 2026</td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">View</button>
-                <button className="text-green-600 hover:underline">
-                  Update
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <tbody>
+              {applications.map((e) => (
+                <tr key={e._id} className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50">
+                  <td className="px-4 py-3">{e?.user?.firstname}</td>
+                  <td>{e?.user?.email}</td>
+                  <td>{e?.user?.domain}</td>
+                  <td
+                    className="underline text-blue-600 cursor-pointer"
+                    onClick={() => window.open(e?.user?.resume, "_blank")}
+                  >
+                    View
+                  </td>
+                  <td>{e?.user?.experience || "-"}</td>
+                  <td>
+                    <span className="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
+                      {e?.status}
+                    </span>
+                  </td>
+                  <td>
+                    {new Date(e?.createdAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="space-x-2">
+                    <button className="text-green-600 hover:underline">
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination (Optional) */}

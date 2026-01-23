@@ -18,6 +18,10 @@ const JobManagement = () => {
     formState: { errors },
   } = useForm();
 
+  // useEffect(() => {
+  //   console.log(jobs);
+  // }, [jobs]);
+
   // post new job
   const onSubmit = async (data) => {
     try {
@@ -25,12 +29,12 @@ const JobManagement = () => {
       reset();
       toast.success(response.data.message);
       fetchJobs();
+
       setShowForm(false);
     } catch (error) {
       toast.error("Can't post job");
     }
   };
-
 
   return (
     <DashboardLayout>
@@ -222,54 +226,79 @@ const JobManagement = () => {
       )}
 
       {/* Job Listings */}
-      <div className="bg-white rounded-md shadow-sm overflow-x-auto">
-        <table className="w-full text-sm text-center">
-          <thead className="border-b border-gray-300 bg-gray-50">
-            <tr className="text-gray-600">
-              <th className="px-4 py-3">Job Title</th>
-              <th className="px-4 py-3">Department</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Location</th>
-              <th className="px-4 py-3">Openings</th>
-              <th className="px-4 py-3">Experience</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {jobs.map((e) => (
-              <tr key={e._id}>
-                <td className="px-4 py-3">{e?.title}</td>
-                <td className="px-4 py-3">{e.department || "-"}</td>
-                <td className="px-4 py-3">{e?.jobType}</td>
-                <td className="px-4 py-3">{e?.location}</td>
-                <td className="px-4 py-3">{e?.numberOfOpening}</td>
-                <td className="px-4 py-3">{e?.experience || "-"}</td>
-                <td className="px-4 py-3">
-                  {new Date(e?.closingDate) < new Date() ? (
-                    <span className="inline-block px-2 py-1 text-xs rounded bg-red-100 text-red-700">
-                      Closed
-                    </span>
-                  ) : (
-                    <span className="inline-block px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                      Open
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3 space-x-2">
-                  <button className="text-blue-600 hover:underline">
-                    Edit
-                  </button>
-                  <button className="text-red-600 hover:underline">
-                    Close
-                  </button>
-                </td>
+      {jobs.length == 0 ? (
+        <div className="text-center">
+          <p>No job post</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-md shadow-sm overflow-x-auto">
+          <table className="w-full text-sm text-center">
+            <thead className="border-b border-gray-300 bg-gray-50">
+              <tr className="text-gray-600">
+                <th className="px-4 py-3">Job Title</th>
+                <th className="px-4 py-3">Department</th>
+                <th className="px-4 py-3">Type</th>
+                <th className="px-4 py-3">Location</th>
+                <th className="px-4 py-3">Openings</th>
+                <th className="px-4 py-3">Experience</th>
+                <th className="px-4 py-3">Opening Date</th>
+                <th className="px-4 py-3">Closing Date</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {jobs.map((e) => (
+                <tr key={e._id}>
+                  <td className="px-4 py-3">{e?.title}</td>
+                  <td className="px-4 py-3">{e.department || "-"}</td>
+                  <td className="px-4 py-3">{e?.jobType}</td>
+                  <td className="px-4 py-3">{e?.location}</td>
+                  <td className="px-4 py-3">{e?.numberOfOpening}</td>
+                  <td className="px-4 py-3">
+                    {e?.experience + " Year" || "-"}
+                  </td>
+                  <td className="px-4 py-3">
+                    {new Date(e?.createdAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="px-4 py-3">
+                    {new Date(e?.closingDate).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="px-4 py-3">
+                    {new Date(e?.closingDate) < new Date() ? (
+                      <span className="inline-block px-2 py-1 text-xs rounded bg-red-100 text-red-700">
+                        Closed
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                        Open
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 space-x-2">
+                    <button className="text-blue-600 hover:underline">
+                      Edit
+                    </button>
+                    <button className="text-red-600 hover:underline">
+                      Close
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+         
+        </div>
+      )}
     </DashboardLayout>
   );
 };

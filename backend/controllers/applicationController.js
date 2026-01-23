@@ -29,3 +29,25 @@ export const allApplicants = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// all applications
+export const applications = async (req, res) => {
+  try {
+    const response = await Application.find()
+      .populate(
+        "user",
+        "firstname middlename lastname email phone domain skills resume",
+      )
+      .populate(
+        "job",
+        "title department jobType experience description skills closingDate createdAt",
+      );
+
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

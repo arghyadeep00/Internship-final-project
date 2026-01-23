@@ -71,8 +71,7 @@ const userSchema = new mongoose.Schema(
     skills: [String],
 
     resume: {
-      url: String,
-      uploadedAt: Date,
+      type: String,
     },
 
     appliedJobs: [appliedJobSchema],
