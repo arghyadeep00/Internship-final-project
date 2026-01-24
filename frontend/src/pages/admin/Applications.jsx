@@ -1,11 +1,34 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useAdminGlobal } from "../../context/AdminContext";
 import { useEffect, useState } from "react";
-import { File } from "lucide-react";
+import api from "../../services/api";
+import toast from "react-hot-toast";
+import statusColor from "../../styles/statusColor";
 
 const Applications = () => {
   const { applications } = useAdminGlobal();
   const [editStatus, setEditStatus] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState([]);
+  const userStatusUpdate = (id) => {
+    setEditStatus(true);
+    setSelectedApplication(applications.find((e) => e._id === id));
+  };
+  // change status
+  const updateStatus = async (status, applicationId) => {
+    try {
+      const response = await api.patch("/job/update-status", {
+        status,
+        applicationId,
+      });
+      toast.success(response.data.message);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      toast.error("Status update filed");
+    } finally {
+      setEditStatus(false);
+    }
+  };
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -52,6 +75,7 @@ const Applications = () => {
           <table className="w-full text-sm border-collapse">
             <thead className=" bg-gray-50">
               <tr className="text-center text-gray-600">
+                <th className="px-4 py-3">Job Title</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Domin</th>
@@ -69,18 +93,30 @@ const Applications = () => {
                   key={e._id}
                   className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50"
                 >
+                  <td className="px-4 py-3 text-blue-700 font-bold">
+                    {e?.job?.title}
+                  </td>
                   <td className="px-4 py-3">{e?.user?.firstname}</td>
                   <td>{e?.user?.email}</td>
                   <td>{e?.user?.domain}</td>
-                  <td
-                    className="underline text-blue-600 cursor-pointer"
-                    onClick={() => window.open(e?.user?.resume, "_blank")}
-                  >
-                    View
-                  </td>
+                  {e?.user?.resume?.url ? (
+                    <td
+                      className="underline text-blue-600 cursor-pointer"
+                      onClick={() =>
+                        window.open(e?.user?.resume?.url, "_blank")
+                      }
+                    >
+                      View
+                    </td>
+                  ) : (
+                    <td>-</td>
+                  )}
+
                   <td>{e?.user?.experience || "-"}</td>
                   <td>
-                    <span className="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${statusColor[e?.status]}`}
+                    >
                       {e?.status}
                     </span>
                   </td>
@@ -94,7 +130,7 @@ const Applications = () => {
                   <td className="space-x-2">
                     <button
                       className="text-green-600 hover:underline"
-                      onClick={() => setEditStatus(true)}
+                      onClick={() => userStatusUpdate(e._id)}
                     >
                       Update
                     </button>
@@ -116,17 +152,76 @@ const Applications = () => {
       </div>
 
       {/* update status */}
-      {editStatus && (
+      {editStatus && selectedApplication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-          onClick={()=>setEditStatus(false)}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setEditStatus(false)}
           />
+
+          {/* Modal */}
           <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-600">
-              Update Status
+            <h2 className="text-lg font-semibold mb-4 text-gray-700">
+              Update Application Status
             </h2>
-            
+
+            {/* USER DETAILS */}
+            <div className="mb-4 shadow-md rounded p-3">
+              <p className="text-sm font-semibold text-gray-600 mb-1">
+                Candidate Details
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Name:</span>{" "}
+                {selectedApplication?.user?.firstname}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Email:</span>{" "}
+                {selectedApplication?.user?.email}
+              </p>
+            </div>
+
+            {/* JOB DETAILS */}
+            <div className="mb-4 shadow-md rounded p-3">
+              <p className="text-sm font-semibold text-gray-600 mb-1">
+                Job Details
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Title:</span>{" "}
+                {selectedApplication?.job?.title}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Department:</span>{" "}
+                {selectedApplication?.job?.department}
+              </p>
+            </div>
+
+            {/* ACTION BUTTONS */}
+            <div className="flex justify-between gap-3 mt-6">
+              <button
+                onClick={() =>
+                  updateStatus("Rejected", selectedApplication._id)
+                }
+                className="flex-1 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-600"
+              >
+                Reject
+              </button>
+              <button
+                onClick={() =>
+                  updateStatus("Shortlisted", selectedApplication._id)
+                }
+                className="flex-1 py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"
+              >
+                Shortlist
+              </button>
+            </div>
+
+            <button
+              onClick={() => setEditStatus(false)}
+              className="w-full mt-4 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}

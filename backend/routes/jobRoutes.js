@@ -4,6 +4,7 @@ import {
   applyJob,
   postJob,
   fetchAppliedJobs,
+  updateStatus,
 } from "../controllers/jobController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -16,6 +17,13 @@ router.get(
   verifyToken,
   authorize("user"),
   fetchAppliedJobs,
+);
+
+router.patch(
+  "/job/update-status",
+  verifyToken,
+  authorize("admin"),
+  updateStatus,
 );
 
 export default router;

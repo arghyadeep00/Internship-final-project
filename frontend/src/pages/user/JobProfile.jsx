@@ -4,8 +4,9 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 
 const JobProfile = () => {
-  const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchJobs = async () => {
@@ -24,18 +25,32 @@ const JobProfile = () => {
       setLoading(false);
     }
   };
+  const fetchAppliedJobs = async () => {
+    try {
+      const res = await api.get("/job/fetch-applied-jobs");
+      setAppliedJobs(res.data.resultData);
+    } catch (error) {
+      toast.error("error");
+    }
+  };
   const applyJob = async (id) => {
     try {
       const response = await api.post("/job/apply-job", { id });
       toast.success(response.data.message);
     } catch (error) {
+      console.log(error)
       toast.error("Can't post job");
     }
   };
 
   useEffect(() => {
     fetchJobs();
+    fetchAppliedJobs();
   }, []);
+
+  const isSelectedJobApplied = appliedJobs.some(
+    (applied) => applied.job?._id === selectedJob?._id,
+  );
 
   return (
     <DashboardLayout>
@@ -72,7 +87,7 @@ const JobProfile = () => {
                 {job.jobType} • {job.location}
               </p>
 
-              {job.applied && (
+              {appliedJobs.some((applied) => applied.job?._id === job._id) && (
                 <span className="inline-block mt-2 text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
                   Applied
                 </span>
@@ -126,11 +141,18 @@ const JobProfile = () => {
                     Eligibility Criteria
                   </button>
                 </div>
-                <div className="px-3 py-2 mt-3 rounded bg-purple-500 font-semibold text-white hover:bg-purple-600">
-                  <button onClick={() => applyJob(selectedJob._id)}>
+                {isSelectedJobApplied ? (
+                  <div className="px-4 py-2 mt-3 rounded bg-green-100 text-green-700 font-semibold cursor-not-allowed">
+                    Applied
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => applyJob(selectedJob._id)}
+                    className="px-4 py-2 mt-3 rounded bg-purple-500 font-semibold text-white hover:bg-purple-600"
+                  >
                     Apply now
                   </button>
-                </div>
+                )}
               </div>
 
               {/* Job Description */}

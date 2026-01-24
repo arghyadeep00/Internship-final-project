@@ -43,7 +43,7 @@ const Navbar = () => {
       ) : (
         <div ref={dropdownRef} className="relative">
           <img
-            src={user.avatar.url || "/user.png"}
+            src={user?.avatar?.url || "/user.png"}
             alt="profile"
             className="rounded-full w-10 h-10 cursor-pointer"
             onClick={() => setOpen((prev) => !prev)}

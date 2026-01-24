@@ -77,6 +77,15 @@ export const applyJob = async (req, res) => {
     const userId = req.user.id;
     const jobId = req.body.id;
 
+    const checkUser = await Application.findOne({ user: userId, job: jobId });
+
+    if (checkUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Alrady applied",
+      });
+    }
+
     await Application.create({
       user: userId,
       job: jobId,
@@ -102,6 +111,22 @@ export const fetchAppliedJobs = async (req, res) => {
     return res.status(200).json({
       success: true,
       resultData: response,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const updateStatus = async (req, res) => {
+  try {
+    const { status, applicationId } = req.body;
+    await Application.findByIdAndUpdate(applicationId, { status });
+    return res.status(200).json({
+      success: true,
+      message: "status update success",
     });
   } catch (error) {
     console.log(error);
