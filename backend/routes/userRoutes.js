@@ -9,9 +9,16 @@ import {
   resume,
   skills,
 } from "../controllers/userController.js";
+import uploadImage from "../middleware/imageUploadMiddleware.js";
 const router = express.Router();
 
-router.put("/avatar", verifyToken, authorize("user"), avatar);
+router.put(
+  "/avatar",
+  verifyToken,
+  authorize("user"),
+  uploadImage.single("image"),
+  avatar,
+);
 router.put("/profile", verifyToken, authorize("user"), profile);
 router.put("/personal", verifyToken, authorize("user"), personal);
 router.put("/skills", verifyToken, authorize("user"), skills);

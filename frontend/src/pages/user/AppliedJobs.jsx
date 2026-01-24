@@ -13,10 +13,6 @@ const AppliedJobs = () => {
 
   const { appliedJobs } = useUserGlobal();
 
-  useEffect(() => {
-    console.log(appliedJobs);
-  }, [appliedJobs]);
-
   return (
     <DashboardLayout>
       <div className="p-6">

@@ -1,9 +1,44 @@
 import User from "../models/User.js";
-
+import cloudinary from "../services/cloudinary.js";
+import avatarUploadCloudinary from "../utils/avatarUploadCloudinary.js";
 export const avatar = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Image file require",
+      });
+    }
+    const user = await User.findById(req.user.id);
+
+    // check image present or not
+    if (user.avatar?.public_id) {
+      await cloudinary.uploader.destroy(user.avatar.public_id);
+    }
+
+    // new image upload
+    const uploadAvatar = await avatarUploadCloudinary(req.file.buffer);
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        avatar: {
+          url: uploadAvatar.secure_url,
+          public_id: uploadAvatar.public_id,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Profile update success",
+    });
   } catch (error) {
-    return req
+    console.log(error);
+    return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
   }

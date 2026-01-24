@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import Admin from "../models/Admin.js";
 import jwt from "jsonwebtoken";
-import uploadPdfToCloudinary from "../utils/uploadToCloudinary.js";
+import resumeUploadCloudinary from "../utils/resumeUploadCloudinary.js";
 
 /* REGISTER */
 export const register = async (req, res) => {
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
       });
     }
     // upload to cloudinary
-    const result = await uploadPdfToCloudinary(req.file.buffer);
+    const result = await resumeUploadCloudinary(req.file.buffer);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 

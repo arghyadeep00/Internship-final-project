@@ -1,11 +1,11 @@
 import cloudinary from "../services/cloudinary.js";
 
-const uploadPdfToCloudinary = (fileBuffer) => {
+const avatarUploadCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
         {
-          folder: "resumes",
+          folder: "avatar",
           resource_type: "raw",
         },
         (error, result) => {
@@ -13,10 +13,10 @@ const uploadPdfToCloudinary = (fileBuffer) => {
             return reject(error);
           }
           resolve(result);
-        }
+        },
       )
       .end(fileBuffer);
   });
 };
 
-export default uploadPdfToCloudinary;
+export default avatarUploadCloudinary;

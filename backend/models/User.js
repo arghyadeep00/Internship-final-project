@@ -38,7 +38,10 @@ const userSchema = new mongoose.Schema(
     middlename: { type: String, trim: true, default: null },
     lastname: { type: String, required: true, trim: true },
 
-    avatar: String,
+    avatar: {
+      url: String,
+      public_id: String,
+    },
 
     email: {
       type: String,
@@ -67,7 +70,7 @@ const userSchema = new mongoose.Schema(
     education: [educationSchema],
 
     domain: String,
-    
+
     experience: Number,
 
     skills: [String],

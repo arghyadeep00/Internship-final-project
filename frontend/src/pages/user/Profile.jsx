@@ -10,8 +10,10 @@ import api from "../../services/api";
 
 const Profile = () => {
   const { user, fetchApplicants } = useAuth();
+  const [preview, setPreview] = useState(null);
 
   // for open edit forms
+  const [editAvatar, setEditAvatar] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [editPersonal, setEditPersonal] = useState(false);
   const [editSkills, setEditSkills] = useState(false);
@@ -56,23 +58,64 @@ const Profile = () => {
     }
   }, [user]);
 
-  const handleProfileSave = async () => {
-    const payload = profileForm;
+  // for profile image
+  const [imageFile, setImageFile] = useState();
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const res = await api.put("/user/profile", payload);
-    toast.success(res.data.message);
-    fetchApplicants();
+    if (!file.type.startsWith("image/")) {
+      return toast.error("Please upload image");
+    }
 
-    setEditProfile(false);
+    const imageUrl = URL.createObjectURL(file);
+    setImageFile(file);
+    setPreview(imageUrl);
   };
 
+  const handleAvatarSave = async () => {
+    if (!imageFile) {
+      return toast.error("No image selected");
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      const res = await api.put("/user/avatar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error("Profile picture update filed");
+    } finally {
+      setEditAvatar(false);
+    }
+  };
+  // update prifle info
+  const handleProfileSave = async () => {
+    const payload = profileForm;
+    try {
+      const res = await api.put("/user/profile", payload);
+      toast.success(res.data.message);
+      fetchApplicants();
+    } catch (error) {
+      toast.error("Profile update filed");
+    } finally {
+      toast.success(res.data.message);
+      setEditProfile(false);
+    }
+  };
+  // update personal details
   const handlePersonalSave = async () => {
     const payload = personalForm;
     const res = await api.put("/user/personal", payload);
     toast.success(res.data.message);
     setEditPersonal(false);
   };
-
+  // update skill & experience
   const handleSkillsSave = async () => {
     const payload = skillsForm;
 
@@ -80,7 +123,7 @@ const Profile = () => {
     toast.success(res.data.message);
     setEditSkills(false);
   };
-
+  // update education information
   const handleEducationSave = async () => {
     const payload = {
       ...educationForm,
@@ -112,9 +155,10 @@ const Profile = () => {
         {/* Profile Card */}
         <div className="bg-white rounded-lg p-6 flex items-center gap-6 shadow">
           <img
-            src={user.avatar || "/user.png"}
+            src={user.avatar.url || "/user.png"}
             alt="profile"
             className="rounded-full w-18 h-18 cursor-pointer"
+            onClick={() => setEditAvatar(true)}
           />
 
           <div className="flex-1 roboto">
@@ -269,13 +313,69 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer font-bold"
-           onClick={() => window.open(user?.resume, "_blank")}
+          <div
+            className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer font-bold"
+            onClick={() => window.open(user?.resume, "_blank")}
           >
             Preview Resume
           </div>
         </div>
       </div>
+
+      {/* edit image (avater) */}
+
+      {editAvatar && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setEditAvatar(false)}
+          />
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Upload Profile Picture
+            </h2>
+            <label
+              htmlFor="imageUpload"
+              className="border flex justify-center rounded-md text-gray-400 cursor-pointer"
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="h-full w-full object-cover rounded-md"
+                />
+              ) : (
+                <img src="/uploadIcon.png" className="w-20" alt="upload" />
+              )}
+            </label>
+
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              hidden
+              onChange={handleImageChange}
+            />
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setEditAvatar(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleAvatarSave();
+                  setEditAvatar(false);
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* edit profile section (name) */}
       {editProfile && (

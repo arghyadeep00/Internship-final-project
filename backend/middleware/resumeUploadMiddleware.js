@@ -2,7 +2,7 @@ import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req, file, cb) => {
+const resumeFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
   } else {
@@ -10,12 +10,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
+const uploadResume = multer({
   storage,
-  fileFilter,
+  resumeFilter,
   limits: {
     fileSize: 3 * 1024 * 1024,
   },
 });
 
-export default upload;
+export default uploadResume;
