@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import cloudinary from "../services/cloudinary.js";
 import avatarUploadCloudinary from "../utils/avatarUploadCloudinary.js";
+import resumeUploadCloudinary from "../utils/resumeUploadCloudinary.js";
 export const avatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -171,8 +172,43 @@ export const education = async (req, res) => {
 };
 export const resume = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Pdf file require",
+      });
+    }
+
+    const user = await User.findById(req.user.id);
+
+    // check resume present or not
+    if (user.resume?.public_id) {
+      await cloudinary.uploader.destroy(user.resume.public_id);
+    }
+
+    // new resume upload
+    const uploadResume = await resumeUploadCloudinary(req.file.buffer);
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        resume: {
+          url: uploadResume.secure_url,
+          public_id: uploadResume.public_id,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Resume updated",
+    });
   } catch (error) {
-    return req
+    console.log(error);
+    return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
   }

@@ -45,7 +45,7 @@ export const register = async (req, res) => {
       phone,
       domain,
       password: hashedPassword,
-      resume: result.secure_url,
+      resume: { url: result.secure_url, public_id: result.public_id },
     });
 
     res.status(201).json({ success: true, message: "Registration successful" });

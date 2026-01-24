@@ -76,7 +76,8 @@ const userSchema = new mongoose.Schema(
     skills: [String],
 
     resume: {
-      type: String,
+      url: String,
+      public_id: String,
     },
 
     appliedJobs: [appliedJobSchema],

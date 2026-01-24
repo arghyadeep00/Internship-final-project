@@ -10,6 +10,7 @@ import {
   skills,
 } from "../controllers/userController.js";
 import uploadImage from "../middleware/imageUploadMiddleware.js";
+import uploadResume from "../middleware/resumeUploadMiddleware.js";
 const router = express.Router();
 
 router.put(
@@ -23,6 +24,12 @@ router.put("/profile", verifyToken, authorize("user"), profile);
 router.put("/personal", verifyToken, authorize("user"), personal);
 router.put("/skills", verifyToken, authorize("user"), skills);
 router.put("/education", verifyToken, authorize("user"), education);
-router.put("/resume", verifyToken, authorize("user"), resume);
+router.patch(
+  "/resume",
+  verifyToken,
+  authorize("user"),
+  uploadResume.single("resume"),
+  resume,
+);
 
 export default router;

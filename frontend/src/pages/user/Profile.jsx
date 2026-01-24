@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { User } from "lucide-react";
 import { Brain, School, File, Code } from "lucide-react";
@@ -10,7 +10,7 @@ import api from "../../services/api";
 
 const Profile = () => {
   const { user, fetchApplicants } = useAuth();
-  const [preview, setPreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // for open edit forms
   const [editAvatar, setEditAvatar] = useState(false);
@@ -18,6 +18,7 @@ const Profile = () => {
   const [editPersonal, setEditPersonal] = useState(false);
   const [editSkills, setEditSkills] = useState(false);
   const [editEducation, setEducation] = useState(false);
+  const [editResume, setResume] = useState(false);
 
   // for forms
   const [profileForm, setProfileForm] = useState({});
@@ -70,7 +71,7 @@ const Profile = () => {
 
     const imageUrl = URL.createObjectURL(file);
     setImageFile(file);
-    setPreview(imageUrl);
+    setImagePreview(imageUrl);
   };
 
   const handleAvatarSave = async () => {
@@ -138,9 +139,43 @@ const Profile = () => {
 
     setEducation(false);
   };
-  // useEffect(() => {
-  //   console.log(user);
-  // }, [user]);
+
+  // resume update
+  const [resumeFile, setResumeFile] = useState();
+  const handlePdfChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("application/pdf")) {
+      return toast.error("Please upload pdf");
+    }
+
+    setResumeFile(file);
+  };
+  const handleResumeSave = async () => {
+    if (!resumeFile) {
+      return toast.error("Please select pdf file");
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("resume", resumeFile);
+
+      console.log(formData);
+      const res = await api.patch("/user/resume", formData, {
+        headers: {
+          "Content-Type": "application/pdf",
+        },
+      });
+      console.log(res);
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error("File can't update");
+    } finally {
+      setResume(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6 relative">
@@ -302,22 +337,28 @@ const Profile = () => {
         <div className="bg-white shadow rounded-lg p-6 flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-xl">
-              <div className="flex gap-2 text-gray-800">
-                {" "}
-                <File />
-                Resume
+              <div className="flex justify-between">
+                <div className="flex gap-2 text-gray-800">
+                  {" "}
+                  <File />
+                  Resume
+                </div>
+                <Eye
+                  className="cursor-pointer"
+                  onClick={() => window.open(user?.resume.url, "_blank")}
+                />
               </div>
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 mt-3">
               Upload or update your resume
             </p>
           </div>
 
-          <div
-            className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer font-bold"
-            onClick={() => window.open(user?.resume, "_blank")}
-          >
-            Preview Resume
+          <div>
+            <SquarePen
+              className="cursor-pointer"
+              onClick={() => setResume(true)}
+            />
           </div>
         </div>
       </div>
@@ -338,9 +379,9 @@ const Profile = () => {
               htmlFor="imageUpload"
               className="border flex justify-center rounded-md text-gray-400 cursor-pointer"
             >
-              {preview ? (
+              {imagePreview ? (
                 <img
-                  src={preview}
+                  src={imagePreview}
                   alt="preview"
                   className="h-full w-full object-cover rounded-md"
                 />
@@ -366,7 +407,6 @@ const Profile = () => {
               <button
                 onClick={() => {
                   handleAvatarSave();
-                  setEditAvatar(false);
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
@@ -700,6 +740,53 @@ const Profile = () => {
                   setEducation(false);
                   handleEducationSave();
                 }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* // resume edit  */}
+      {editResume && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setResume(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-4 text-gray-600">
+              Upload Resume
+            </h2>
+            <label
+              htmlFor="resume"
+              className="w-full border border-gray-400 rounded-md flex justify-center cursor-pointer"
+            >
+              <img src="/uploadIcon.png" width={200} alt="" />
+              <input
+                type="file"
+                id="resume"
+                hidden
+                accept="application/pdf"
+                onChange={handlePdfChange}
+              />
+            </label>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setResume(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleResumeSave();
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Save
               </button>
