@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import statusColor from "../../styles/statusColor";
 
 const Applications = () => {
-  const { applications } = useAdminGlobal();
+  const { applications, fetchApplications } = useAdminGlobal();
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
   const userStatusUpdate = (id) => {
@@ -21,7 +21,7 @@ const Applications = () => {
         applicationId,
       });
       toast.success(response.data.message);
-      console.log(response);
+       fetchApplications();
     } catch (error) {
       console.log(error);
       toast.error("Status update filed");
@@ -29,6 +29,7 @@ const Applications = () => {
       setEditStatus(false);
     }
   };
+
   return (
     <DashboardLayout>
       {/* Page Header */}

@@ -5,10 +5,12 @@ import { Plus } from "lucide-react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { useAdminGlobal } from "../../context/AdminContext";
+import Swal from "sweetalert2";
 
 const JobManagement = () => {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editJob, setEditJob] = useState(false);
   const { jobs, fetchJobs } = useAdminGlobal();
 
   const {
@@ -17,10 +19,6 @@ const JobManagement = () => {
     reset,
     formState: { errors },
   } = useForm();
-
-  // useEffect(() => {
-  //   console.log(jobs);
-  // }, [jobs]);
 
   // post new job
   const onSubmit = async (data) => {
@@ -34,6 +32,64 @@ const JobManagement = () => {
     } catch (error) {
       toast.error("Can't post job");
     }
+  };
+
+  // edit job details
+  const [editJobDetatils, setEditJobDetails] = useState();
+
+  const handleEditJob = async (id) => {
+    setEditJob(true);
+    const jobDetails = jobs.find((e) => e._id === id);
+    setEditJobDetails({
+      id: id,
+      title: jobDetails.title || "",
+      department: jobDetails.department || "",
+      jobType: jobDetails.jobType || "",
+      location: jobDetails.location || "",
+      numberOfOpening: jobDetails.numberOfOpening || "",
+      experience: jobDetails.experience || "",
+      createdAt: jobDetails.createdAt || "",
+      closingDate: jobDetails.closingDate || "",
+    });
+  };
+
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.patch(
+        "/job/update-job-details",
+        editJobDetatils,
+      );
+      setEditJob(false);
+      fetchJobs();
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // delete job
+
+  const deleteJob = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you want to delete the job !",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Yes, delete it",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await api.delete(`/job/delete-job/${id}`);
+          fetchJobs();
+          toast.success(response.data.message);
+        } catch (error) {
+          toast.error(error.response?.data?.message || "Failed to delete job");
+        }
+      }
+    });
   };
 
   return (
@@ -284,19 +340,227 @@ const JobManagement = () => {
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 space-x-2">
-                    <button className="text-blue-600 hover:underline">
+                  <td className="px-4 py-3 space-x-4">
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => handleEditJob(e._id)}
+                    >
                       Edit
                     </button>
-                    <button className="text-red-600 hover:underline">
-                      Close
+                    <button
+                      className="text-red-600 hover:underline"
+                      onClick={() => deleteJob(e._id)}
+                    >
+                      delete
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-         
+        </div>
+      )}
+      {/* edit posted job details  */}
+      {editJob && editJobDetatils && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setEditJob(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-5xl p-6">
+            <h2 className="text-lg font-semibold mb-6 text-gray-700">
+              Update Job Details
+            </h2>
+
+            <form
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+              onSubmit={handleOnSubmit}
+            >
+              {/* Job Title */}
+              <div>
+                <label className="text-sm text-gray-600">Job Title</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter job title"
+                  value={editJobDetatils.title}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      title: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Department */}
+              <div>
+                <label className="text-sm text-gray-600">Department</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter department"
+                  value={editJobDetatils.department}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      department: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Job Type */}
+              <div>
+                <label className="text-sm text-gray-600">Job Type</label>
+                <select
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.jobType}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      jobType: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select type</option>
+                  <option>Full Time</option>
+                  <option>Part Time</option>
+                  <option>Internship</option>
+                  <option>Contract</option>
+                </select>
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="text-sm text-gray-600">Location</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Job location"
+                  value={editJobDetatils.location}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      location: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Openings */}
+              <div>
+                <label className="text-sm text-gray-600">Openings</label>
+                <input
+                  type="number"
+                  min="1"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.numberOfOpening}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      numberOfOpening: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Experience */}
+              <div>
+                <label className="text-sm text-gray-600">
+                  Experience (Years)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="e.g. 1"
+                  value={editJobDetatils.experience}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      experience: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Opening Date */}
+              <div>
+                <label className="text-sm text-gray-600">Opening Date</label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={
+                    editJobDetatils.createdAt
+                      ? new Date(editJobDetatils.createdAt)
+                          .toISOString()
+                          .split("T")[0]
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      createdAt: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Closing Date */}
+              <div>
+                <label className="text-sm text-gray-600">Closing Date</label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={
+                    editJobDetatils.closingDate
+                      ? new Date(editJobDetatils.closingDate)
+                          .toISOString()
+                          .split("T")[0]
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      closingDate: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="text-sm text-gray-600">Job Status</label>
+                <select
+                  disabled
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                >
+                  <option>Open</option>
+                  <option>Closed</option>
+                  <option>Paused</option>
+                </select>
+              </div>
+              {/* Actions */}
+              <div className="flex w-full justify-end col-span-1 md:col-span-2 lg:col-span-3 gap-3 mt-6">
+                <button
+                  className="px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-100"
+                  onClick={() => setEditJob(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700"
+                >
+                  Update Job
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </DashboardLayout>

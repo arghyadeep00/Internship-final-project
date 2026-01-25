@@ -17,7 +17,7 @@ export const UserGlobalProvider = ({ children }) => {
   }, []);
   return (
     <UserGlobalContext.Provider
-      value={{ appliedJobs, fetchApplyJobs, loading, setLoading }}
+      value={{ appliedJobs, loading, setLoading, fetchApplyJobs }}
     >
       {children}
     </UserGlobalContext.Provider>

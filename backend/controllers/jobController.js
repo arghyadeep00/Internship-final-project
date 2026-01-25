@@ -101,6 +101,7 @@ export const applyJob = async (req, res) => {
   }
 };
 
+// applied jobs
 export const fetchAppliedJobs = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -133,5 +134,62 @@ export const updateStatus = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const updateJobDetails = async (req, res) => {
+  const {
+    id,
+    title,
+    department,
+    jobType,
+    location,
+    numberOfOpening,
+    experience,
+    closingDate,
+  } = req.body;
+  try {
+    const updates = {
+      title,
+      department,
+      jobType,
+      location,
+      numberOfOpening,
+      experience,
+      closingDate,
+    };
+    Object.keys(updates).forEach(
+      (key) => updates[key] === undefined && delete updates[key],
+    );
+    await Job.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true },
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Update success",
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const deleteJob = async(req, res) => {
+  try {
+    const { id } = req.params;
+    await Job.findByIdAndDelete(id);
+    return res.status(200).json({
+      success: true,
+      message: "delete successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error can't delete" });
   }
 };

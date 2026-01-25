@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import api from "../../services/api";
 
 const Profile = () => {
-  const { user, fetchApplicants } = useAuth();
+  const { user, fetchUser, fetchApplicants } = useAuth();
   const [imagePreview, setImagePreview] = useState(null);
 
   // for open edit forms
@@ -89,6 +89,7 @@ const Profile = () => {
         },
       });
       toast.success(res.data.message);
+      fetchUser();
     } catch (error) {
       toast.error("Profile picture update filed");
     } finally {
@@ -101,7 +102,7 @@ const Profile = () => {
     try {
       const res = await api.put("/user/profile", payload);
       toast.success(res.data.message);
-      fetchApplicants();
+      fetchUser();
     } catch (error) {
       toast.error("Profile update filed");
     } finally {
@@ -114,6 +115,7 @@ const Profile = () => {
     const payload = personalForm;
     const res = await api.put("/user/personal", payload);
     toast.success(res.data.message);
+    fetchUser();
     setEditPersonal(false);
   };
   // update skill & experience
@@ -122,6 +124,7 @@ const Profile = () => {
 
     const res = await api.put("/user/skills", payload);
     toast.success(res.data.message);
+    fetchUser();
     setEditSkills(false);
   };
   // update education information
@@ -136,6 +139,7 @@ const Profile = () => {
 
     const res = await api.put("/user/education", payload);
     toast.success(res.data.message);
+    fetchUser();
 
     setEducation(false);
   };
@@ -161,7 +165,6 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("resume", resumeFile);
 
-      console.log(formData);
       const res = await api.patch("/user/resume", formData, {
         headers: {
           "Content-Type": "application/pdf",
@@ -169,6 +172,7 @@ const Profile = () => {
       });
       console.log(res);
       toast.success(res.data.message);
+      fetchUser();
     } catch (error) {
       toast.error("File can't update");
     } finally {
@@ -190,7 +194,7 @@ const Profile = () => {
         {/* Profile Card */}
         <div className="bg-white rounded-lg p-6 flex items-center gap-6 shadow">
           <img
-            src={user.avatar.url || "/user.png"}
+            src={user?.avatar?.url || "/user.png"}
             alt="profile"
             className="rounded-full w-18 h-18 cursor-pointer"
             onClick={() => setEditAvatar(true)}

@@ -56,12 +56,13 @@ export const AdminGlobalProvider = ({ children }) => {
     <AdminGlobalContext.Provider
       value={{
         jobs,
-        fetchApplicants,
         setJobs,
         applications,
-        fetchJobs,
         applicants,
         setApplicants,
+        fetchJobs,
+        fetchApplicants,
+        fetchApplications,
         loading,
       }}
     >
