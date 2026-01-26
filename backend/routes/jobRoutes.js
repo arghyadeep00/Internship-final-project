@@ -4,9 +4,9 @@ import {
   applyJob,
   postJob,
   fetchAppliedJobs,
-  updateStatus,
   updateJobDetails,
-  deleteJob
+  deleteJob,
+  
 } from "../controllers/jobController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -21,12 +21,6 @@ router.get(
   fetchAppliedJobs,
 );
 
-router.patch(
-  "/job/update-status",
-  verifyToken,
-  authorize("admin"),
-  updateStatus,
-);
 
 router.patch(
   "/job/update-job-details",
@@ -35,6 +29,11 @@ router.patch(
   updateJobDetails,
 );
 
-router.delete("/job/delete-job/:id",verifyToken,authorize("admin"),deleteJob);
+router.delete(
+  "/job/delete-job/:id",
+  verifyToken,
+  authorize("admin"),
+  deleteJob,
+);
 
 export default router;

@@ -1,9 +1,22 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { Users, FileText, CheckCircle, XCircle } from "lucide-react";
 import { useAdminGlobal } from "../../context/AdminContext";
+import { useEffect } from "react";
+import statusColor from "../../styles/statusColor";
 
 const AdminDashboard = () => {
-  const { applicants } = useAdminGlobal();
+  const { applicants, applications } = useAdminGlobal();
+
+  const lastFiveDaysData = applications
+    .filter((item) => {
+      const createdDate = new Date(item.createdAt);
+      const fiveDaysAgo = new Date();
+      fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
+      return createdDate >= fiveDaysAgo;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   return (
     <DashboardLayout>
       {/* Page Title */}
@@ -67,46 +80,47 @@ const AdminDashboard = () => {
           <table className="w-full text-sm">
             <thead className="border-b border-gray-300">
               <tr className="text-left text-gray-700 ">
+                <th className="pb-3">Job Title</th>
                 <th className="pb-3">Name</th>
-                <th className="pb-3">Position</th>
+                <th className="pb-3">Domin</th>
                 <th className="pb-3">Status</th>
-                <th className="pb-3">Date</th>
+                <th className="pb-3">Apply Date</th>
                 <th className="pb-3">Action</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr className="hover:bg-blue-50">
-                <td className="py-3">Rahul Sharma</td>
-                <td>Frontend Developer</td>
-                <td>
-                  <span className="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
-                    Pending
-                  </span>
-                </td>
-                <td>21 Jan 2026</td>
-                <td>
-                  <button className="text-blue-600 hover:underline">
-                    View
-                  </button>
-                </td>
-              </tr>
-
-              <tr>
-                <td className="py-3">Ananya Das</td>
-                <td>Backend Developer</td>
-                <td>
-                  <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                    Shortlisted
-                  </span>
-                </td>
-                <td>20 Jan 2026</td>
-                <td>
-                  <button className="text-blue-600 hover:underline">
-                    View
-                  </button>
-                </td>
-              </tr>
+              {lastFiveDaysData.map((item) => (
+                <tr
+                  className="hover:bg-blue-50  odd:bg-white even:bg-gray-50"
+                  key={item._id}
+                >
+                  <td className="py-3 text-blue-700 font-bold">
+                    {item?.job?.title}
+                  </td>
+                  <td className="py-3">{item?.user?.firstname}</td>
+                  <td>{item?.user?.domain}</td>
+                  <td>
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${statusColor[item?.status]}`}
+                    >
+                      {item?.status}
+                    </span>
+                  </td>
+                  <td>
+                    {new Date(item?.createdAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td>
+                    <button className="text-blue-600 hover:underline">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

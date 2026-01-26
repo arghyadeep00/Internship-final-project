@@ -52,11 +52,20 @@ export const applications = async (req, res) => {
   }
 };
 
-
-export const updateStatus = async(req,res)=>{
+export const updateStatus = async (req, res) => {
   try {
-    
+    const { status, applicationId } = req.body;
+    await Application.findByIdAndUpdate(applicationId, { status });
+    return res.status(200).json({
+      success: true,
+      message: "status update success",
+    });
   } catch (error) {
-    
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
-}
+};
+
+

@@ -16,7 +16,7 @@ const Applications = () => {
   // change status
   const updateStatus = async (status, applicationId) => {
     try {
-      const response = await api.patch("/job/update-status", {
+      const response = await api.patch("/application/update-status", {
         status,
         applicationId,
       });
