@@ -3,9 +3,11 @@ import { Users, FileText, CheckCircle, XCircle } from "lucide-react";
 import { useAdminGlobal } from "../../context/AdminContext";
 import { useEffect } from "react";
 import statusColor from "../../styles/statusColor";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const { applicants, applications } = useAdminGlobal();
+  const navigate = useNavigate();
 
   const lastFiveDaysData = applications
     .filter((item) => {
@@ -92,8 +94,9 @@ const AdminDashboard = () => {
             <tbody>
               {lastFiveDaysData.map((item) => (
                 <tr
-                  className="hover:bg-blue-50  odd:bg-white even:bg-gray-50"
+                  className="hover:bg-blue-50 cursor-pointer odd:bg-white even:bg-gray-50"
                   key={item._id}
+                  onClick={() => navigate(`/admin/user-profile/${item.user._id}`)}
                 >
                   <td className="py-3 text-blue-700 font-bold">
                     {item?.job?.title}

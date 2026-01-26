@@ -121,7 +121,6 @@ export const fetchAppliedJobs = async (req, res) => {
   }
 };
 
-
 export const updateJobDetails = async (req, res) => {
   const {
     id,
@@ -164,10 +163,11 @@ export const updateJobDetails = async (req, res) => {
   }
 };
 
-export const deleteJob = async(req, res) => {
+export const deleteJob = async (req, res) => {
   try {
     const { id } = req.params;
     await Job.findByIdAndDelete(id);
+    await Application.deleteMany({ job: id });
     return res.status(200).json({
       success: true,
       message: "delete successfully",
@@ -178,5 +178,3 @@ export const deleteJob = async(req, res) => {
       .json({ success: false, message: "Internal server error can't delete" });
   }
 };
-
-

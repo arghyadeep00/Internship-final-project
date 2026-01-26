@@ -41,8 +41,8 @@ const AppliedJobs = () => {
                   <td className="p-4 font-medium">{jobs?.job?.title}</td>
                   <td className="p-4 font-medium">{jobs?.job?.jobType}</td>
                   <td className="p-4 font-medium">{jobs?.job?.location}</td>
-                  <td className="p-4">{new Date(jobs?.createdAt).toLocaleDateString("en-In")}</td>
-                  <td className="p-4">{new Date(jobs?.job?.closingDate).toLocaleDateString("en-In")}</td>
+                  <td className="p-4">{new Date(jobs?.createdAt).toLocaleDateString("en-IN")}</td>
+                  <td className="p-4">{new Date(jobs?.job?.closingDate).toLocaleDateString("en-IN")}</td>
                  
                   <td className="p-4">
                     <span

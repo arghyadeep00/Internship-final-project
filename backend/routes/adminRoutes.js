@@ -4,6 +4,7 @@ import {
   adminRegister,
   getAllApplications,
   updateApplicationStatus,
+  fetchUser,
 } from "../controllers/adminController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -11,7 +12,7 @@ const router = express.Router();
 // registration admin
 router.post("/register", adminRegister);
 // admin login
-router.post('/login',adminLogin)
+router.post("/login", adminLogin);
 
 router.get(
   "/applications",
@@ -26,5 +27,7 @@ router.put(
   authorize("admin"),
   updateApplicationStatus,
 );
+
+router.get("/fetch-user/:id", verifyToken, authorize("admin"), fetchUser);
 
 export default router;

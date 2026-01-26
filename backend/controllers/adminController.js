@@ -2,6 +2,7 @@ import Application from "../models/Application.js";
 import Admin from "../models/Admin.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 // REGISTER AMDIN ACCOUNT
 export const adminRegister = async (req, res) => {
   try {
@@ -114,5 +115,21 @@ export const updateApplicationStatus = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// FETCH USER ACCOUNT
+
+export const fetchUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await User.findById(id);
+
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error?.message });
   }
 };

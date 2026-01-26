@@ -50,7 +50,7 @@ const Navbar = () => {
           />
 
           {open && (
-            <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow">
+            <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow z-50">
               <Link
                 to="/user/profile"
                 onClick={() => setOpen(false)}

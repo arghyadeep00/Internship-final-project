@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import ProtectedRoute from "./protected/ProtectedRoute";
 import AdminLogin from "./pages/admin/AdminLogin";
 import UserDashboard from "./pages/user/UserDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -22,6 +21,7 @@ import Unauthorized from "./components/Unauthorized";
 import Applications from "./pages/admin/Applications";
 import AdminLayout from "./layouts/AdminLayout";
 import UserLayout from "./layouts/UserLayout";
+import UserDetails from "./pages/admin/UserDetails";
 
 const App = () => {
   return (
@@ -52,6 +52,7 @@ const App = () => {
           <Route path="hired" element={<Hired />} />
           <Route path="job-management" element={<JobManagement />} />
           <Route path="email-templates" element={<EmailTemplates />} />
+          <Route path="user-profile/:id" element={<UserDetails/>}/>
         </Route>
         {/* 404 page */}
         <Route path="*" element={<PageNotFound />} />

@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import statusColor from "../../styles/statusColor";
+import { useNavigate } from "react-router-dom";
 
 const Applications = () => {
+  const navigate = useNavigate();
   const { applications, fetchApplications } = useAdminGlobal();
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
@@ -21,7 +23,7 @@ const Applications = () => {
         applicationId,
       });
       toast.success(response.data.message);
-       fetchApplications();
+      fetchApplications();
     } catch (error) {
       console.log(error);
       toast.error("Status update filed");
@@ -92,7 +94,8 @@ const Applications = () => {
               {applications.map((e) => (
                 <tr
                   key={e._id}
-                  className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50"
+                  className="text-center odd:bg-white cursor-pointer even:bg-gray-50 hover:bg-blue-50"
+                  onClick={() => navigate(`/admin/user-profile/${e.user._id}`)}
                 >
                   <td className="px-4 py-3 text-blue-700 font-bold">
                     {e?.job?.title}
@@ -103,9 +106,10 @@ const Applications = () => {
                   {e?.user?.resume?.url ? (
                     <td
                       className="underline text-blue-600 cursor-pointer"
-                      onClick={() =>
-                        window.open(e?.user?.resume?.url, "_blank")
-                      }
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        window.open(e?.user?.resume?.url, "_blank");
+                      }}
                     >
                       View
                     </td>
@@ -131,9 +135,12 @@ const Applications = () => {
                   <td className="space-x-2">
                     <button
                       className="text-green-600 hover:underline"
-                      onClick={() => userStatusUpdate(e._id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        userStatusUpdate(e._id);
+                      }}
                     >
-                      Update
+                      Update Status
                     </button>
                   </td>
                 </tr>

@@ -10,19 +10,20 @@ const LandingPage = () => {
       <div className="absolute right-[10%] right-40px  w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-30"></div>
 
       <div className="absolute bottom-[20%] -left-10px w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-30"></div>
-      
 
       {/* Navbar */}
-      <Navbar/>
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative z-10 text-center py-24 px-6">
+      <section className="relative text-center py-24 px-6">
         <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
           Start Your Career with{" "}
           <span className="text-purple-600">Veridia.io</span>
         </h2>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto borel">
-         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus aspernatur libero veniam illum aperiam enim tenetur dolorum ipsum dolor sit amet.
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus
+          aspernatur libero veniam illum aperiam enim tenetur dolorum ipsum
+          dolor sit amet.
         </p>
 
         <div className="mt-10 flex justify-center gap-4 flex-wrap">
