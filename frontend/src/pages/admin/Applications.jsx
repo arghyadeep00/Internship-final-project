@@ -5,16 +5,29 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 import statusColor from "../../styles/statusColor";
 import { useNavigate } from "react-router-dom";
+import domain from "../../utils/domain";
 
 const Applications = () => {
   const navigate = useNavigate();
   const { applications, fetchApplications } = useAdminGlobal();
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
+
+  // use states
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [userDomain, setUserDomain] = useState("");
+
+  // one application set a variable for update
   const userStatusUpdate = (id) => {
     setEditStatus(true);
     setSelectedApplication(applications.find((e) => e._id === id));
   };
+
   // change status
   const updateStatus = async (status, applicationId) => {
     try {
@@ -47,22 +60,42 @@ const Applications = () => {
         <input
           type="text"
           placeholder="Search by name or email"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
           className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
         />
 
-        <select className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500">
-          <option>Status</option>
-          <option>Pending</option>
-          <option>Shortlisted</option>
-          <option>Interview Scheduled</option>
-          <option>Rejected</option>
+        <select
+          className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            setPage(1);
+          }}
+        >
+          <option disabled >Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Shortlisted">Shortlisted</option>
+          <option value="Rejected">Rejected</option>
         </select>
 
-        <select className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500">
-          <option>Job Role</option>
-          <option>Frontend Developer</option>
-          <option>Backend Developer</option>
-          <option>Full Stack Developer</option>
+        <select
+          className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+          value={userDomain}
+          onChange={(e) => {
+            setUserDomain(e.target.value);
+            setPage(1);
+          }}
+        >
+          <option value="" disabled>Job Role</option>
+          {domain.map((item, key) => (
+            <option value={item.value} key={key}>
+              {item.title}
+            </option>
+          ))}
         </select>
 
         <button className="bg-purple-600 font-semibold text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">

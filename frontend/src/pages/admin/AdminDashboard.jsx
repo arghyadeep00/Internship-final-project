@@ -43,16 +43,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow-sm">
-          <div className="flex items-center gap-3">
-            <FileText className="text-yellow-500" />
-            <div>
-              <p className="text-sm text-gray-500">Pending Review</p>
-              <h2 className="text-xl font-semibold">45</h2>
-            </div>
-          </div>
-        </div>
-
+        
         <div className="bg-white p-5 rounded-xl shadow-sm">
           <div className="flex items-center gap-3">
             <CheckCircle className="text-green-600" />

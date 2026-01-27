@@ -5,6 +5,7 @@ import { fuseState, useState } from "react";
 import OtpBox from "../../components/OtpBox";
 import toast from "react-hot-toast";
 import api from "../../services/api";
+import domain from "../../utils/domain";
 
 const Register = () => {
   const otpDetails = [
@@ -341,15 +342,12 @@ const Register = () => {
                   <option value="" disabled>
                     Select a domain
                   </option>
-                  <option value="Frontend">Front End Web Development</option>
-                  <option value="Full Stack">Full Stack Web Development</option>
-                  <option value="App">App Development</option>
-                  <option value="AI/ML">AI / ML</option>
-                  <option value="Data Science">
-                    Data Science / Data Analytics
-                  </option>
-                  <option value="uiux">UI / UX</option>
-                  <option value="marketing">Marketing</option>
+
+                  {domain.map((item, key) => (
+                    <option value={item.value} key={key}>
+                      {item.title}
+                    </option>
+                  ))}
                 </select>
                 {errors.domain && (
                   <p className="text-red-500 text-sm mt-1">

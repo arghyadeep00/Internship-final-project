@@ -19,4 +19,5 @@ router.patch(
   authorize("admin"),
   updateStatus,
 );
+
 export default router;
