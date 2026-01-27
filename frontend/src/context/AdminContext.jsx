@@ -8,7 +8,6 @@ export const AdminGlobalProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [applicants, setApplicants] = useState([]);
-  const [applications, setApplications] = useState([]);
 
   // fetch all jobs
   const fetchJobs = async () => {
@@ -36,20 +35,10 @@ export const AdminGlobalProvider = ({ children }) => {
     }
   };
 
-  // fetch applications
-  const fetchApplications = async () => {
-    try {
-      const response = await api.get("/application/applications");
-      setApplications(response.data.resultData);
-    } catch (error) {
-      toast.error("Fetching applications error");
-    }
-  };
 
   useEffect(() => {
     fetchJobs();
     fetchApplicants();
-    fetchApplications();
   }, []);
 
   return (
@@ -57,12 +46,10 @@ export const AdminGlobalProvider = ({ children }) => {
       value={{
         jobs,
         setJobs,
-        applications,
         applicants,
         setApplicants,
         fetchJobs,
         fetchApplicants,
-        fetchApplications,
         loading,
       }}
     >

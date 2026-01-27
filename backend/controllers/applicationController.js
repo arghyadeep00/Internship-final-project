@@ -33,7 +33,13 @@ export const allApplicants = async (req, res) => {
 // all applications
 export const applications = async (req, res) => {
   try {
-    const response = await Application.find()
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalApplications = await Application.countDocuments();
+
+    const applications = await Application.find()
       .populate(
         "user",
         "firstname middlename lastname email phone domain skills resume experience",
@@ -41,11 +47,17 @@ export const applications = async (req, res) => {
       .populate(
         "job",
         "title department jobType experience description skills closingDate createdAt",
-      );
+      )
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
       success: true,
-      resultData: response,
+      totalApplications,
+      currentPage: page,
+      totalPages: Math.ceil(totalApplications / limit),
+      applications,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -67,5 +79,3 @@ export const updateStatus = async (req, res) => {
       .json({ success: false, message: "Internal server error" });
   }
 };
-
-

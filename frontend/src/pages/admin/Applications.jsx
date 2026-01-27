@@ -1,5 +1,4 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { useAdminGlobal } from "../../context/AdminContext";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
@@ -9,14 +8,12 @@ import domain from "../../utils/domain";
 
 const Applications = () => {
   const navigate = useNavigate();
-  const { applications, fetchApplications } = useAdminGlobal();
+
+  const [applications, setApplications] = useState();
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
 
   // use states
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -42,6 +39,36 @@ const Applications = () => {
       toast.error("Status update filed");
     } finally {
       setEditStatus(false);
+    }
+  };
+
+  
+  // pagination code
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(10);
+
+  const fetchApplications = async () => {
+    const res = await api.get(
+      `/application/applications?page=${currentPage}&limit=${limit}`,
+    );
+    setApplications(res.data.applications);
+    setTotalPages(res.data.totalPages);
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, [currentPage]);
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -76,7 +103,7 @@ const Applications = () => {
             setPage(1);
           }}
         >
-          <option disabled >Status</option>
+          <option disabled>Status</option>
           <option value="Pending">Pending</option>
           <option value="Shortlisted">Shortlisted</option>
           <option value="Rejected">Rejected</option>
@@ -90,7 +117,9 @@ const Applications = () => {
             setPage(1);
           }}
         >
-          <option value="" disabled>Job Role</option>
+          <option value="" disabled>
+            Job Role
+          </option>
           {domain.map((item, key) => (
             <option value={item.value} key={key}>
               {item.title}
@@ -105,7 +134,7 @@ const Applications = () => {
 
       {/* Applications Table */}
       <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
-        {applications.length == 0 ? (
+        {!applications ? (
           <div className="text-center p-4">No applicant present</div>
         ) : (
           <table className="w-full text-sm border-collapse">
@@ -114,7 +143,7 @@ const Applications = () => {
                 <th className="px-4 py-3">Job Title</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Domin</th>
+                <th className="px-4 py-3">Domain</th>
                 <th className="px-4 py-3">Resume</th>
                 <th className="px-4 py-3">Experience</th>
                 <th className="px-4 py-3">Status</th>
@@ -183,13 +212,31 @@ const Applications = () => {
         )}
       </div>
 
-      {/* Pagination (Optional) */}
+      {/* Pagination */}
       <div className="mt-6 flex justify-end gap-2">
-        <button className="px-4 py-2  rounded-lg text-sm">Previous</button>
-        <button className="px-4 py-2  rounded-lg text-sm bg-blue-600 text-white">
-          1
+        <button
+          onClick={handlePrev}
+          disabled={currentPage === 1}
+          className="px-4 py-2 rounded-lg text-sm border disabled:opacity-50"
+        >
+          Previous
         </button>
-        <button className="px-4 py-2  rounded-lg text-sm">Next</button>
+
+        {/* Page Numbers */}
+
+        <button
+          className={"px-4 py-2 rounded-lg text-sm bg-blue-600 text-white"}
+        >
+          {currentPage}
+        </button>
+
+        <button
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 rounded-lg text-sm border disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
 
       {/* update status */}
