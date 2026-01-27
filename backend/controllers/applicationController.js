@@ -79,3 +79,53 @@ export const updateStatus = async (req, res) => {
       .json({ success: false, message: "Internal server error" });
   }
 };
+
+export const searchApplication = async (req, res) => {
+  try {
+    const { search, status, domain } = req.query;
+
+    const query = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    let userMatch = {};
+
+    if (search) {
+      userMatch.$or = [
+        { firstname: { $regex: search, $options: "i" } },
+        { lastname: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (domain) {
+      userMatch.domain = domain;
+    }
+    let applications = await Application.find(query)
+      .populate({
+        path: "user",
+        match: userMatch,
+        select:
+          "firstname middlename lastname email phone domain skills experience resume",
+      })
+      .populate(
+        "job",
+        "title department jobType experience description skills closingDate createdAt",
+      )
+      .sort({ createdAt: -1 });
+    applications = applications.filter((app) => app.user !== null);
+
+    res.status(200).json({
+      success: true,
+      total: applications.length,
+      resultData: applications,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Search failed",
+      error: error.message,
+    });
+  }
+};

@@ -35,7 +35,6 @@ export const AdminGlobalProvider = ({ children }) => {
     }
   };
 
-
   useEffect(() => {
     fetchJobs();
     fetchApplicants();

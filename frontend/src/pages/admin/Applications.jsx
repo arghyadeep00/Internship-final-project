@@ -13,11 +13,26 @@ const Applications = () => {
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
 
-  // use states
-
+  // filter states
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [userDomain, setUserDomain] = useState("");
+  const filterOnClick = async () => {
+    try {
+      const response = await api.get("/application/search-application", {
+        params: {
+          search,
+          status,
+          domain: userDomain,
+        },
+      });
+      setApplications(response.data.resultData);
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
+      toast.error("can't find");
+    }
+  };
 
   // one application set a variable for update
   const userStatusUpdate = (id) => {
@@ -42,11 +57,10 @@ const Applications = () => {
     }
   };
 
-  
   // pagination code
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(20);
 
   const fetchApplications = async () => {
     const res = await api.get(
@@ -72,6 +86,14 @@ const Applications = () => {
     }
   };
 
+  // reset search data
+  const resetBtn = () => {
+    setSearch("");
+    setStatus("");
+    setUserDomain("");
+    fetchApplications();
+  };
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -90,7 +112,6 @@ const Applications = () => {
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
-            setPage(1);
           }}
           className="px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
         />
@@ -100,10 +121,11 @@ const Applications = () => {
           value={status}
           onChange={(e) => {
             setStatus(e.target.value);
-            setPage(1);
           }}
         >
-          <option disabled>Status</option>
+          <option disabled value="">
+            Status
+          </option>
           <option value="Pending">Pending</option>
           <option value="Shortlisted">Shortlisted</option>
           <option value="Rejected">Rejected</option>
@@ -114,7 +136,6 @@ const Applications = () => {
           value={userDomain}
           onChange={(e) => {
             setUserDomain(e.target.value);
-            setPage(1);
           }}
         >
           <option value="" disabled>
@@ -127,8 +148,17 @@ const Applications = () => {
           ))}
         </select>
 
-        <button className="bg-purple-600 font-semibold text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">
+        <button
+          className="bg-purple-600 font-semibold text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700"
+          onClick={filterOnClick}
+        >
           Filter
+        </button>
+        <button
+          className="bg-gray-500 font-semibold text-white px-5 py-2 rounded-lg text-sm hover:bg-gray-600"
+          onClick={resetBtn}
+        >
+          Reset
         </button>
       </div>
 
