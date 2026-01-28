@@ -61,15 +61,6 @@ const Navbar = () => {
                 </span>
               </Link>
 
-              <Link
-                to="/user/settings"
-                onClick={() => setOpen(false)}
-                className="block px-4 py-2 text-md text-gray-700 hover:bg-purple-50"
-              >
-                <span className="flex items-center gap-3">
-                  <Settings size={18} /> Settings
-                </span>
-              </Link>
 
               <button
                 onClick={(e) => {

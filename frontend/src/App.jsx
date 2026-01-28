@@ -6,22 +6,22 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import UserDashboard from "./pages/user/UserDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Shortlisted from "./pages/admin/Shortlisted";
-import Interviews from "./pages/admin/Interviews";
-import Hired from "./pages/admin/Hired";
+
 import JobManagement from "./pages/admin/JobManagement";
-import EmailTemplates from "./pages/admin/EmailTemplates";
 
 import Profile from "./pages/user/Profile";
 import LandingPage from "./pages/home/LandingPage";
 import JobProfile from "./pages/user/JobProfile";
 import AppliedJobs from "./pages/user/AppliedJobs";
-import Settings from "./pages/user/Settings";
+
 import PageNotFound from "./components/pageNotFound";
 import Unauthorized from "./components/Unauthorized";
 import Applications from "./pages/admin/Applications";
 import AdminLayout from "./layouts/AdminLayout";
 import UserLayout from "./layouts/UserLayout";
-import UserDetails from "./pages/admin/UserDetails";
+import UserDetails from "./pages/admin/UserProfile";
+import UserProfile from "./pages/admin/UserProfile";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 const App = () => {
   return (
@@ -40,7 +40,6 @@ const App = () => {
           <Route path="job-profile" element={<JobProfile />} />
           <Route path="applied-jobs" element={<AppliedJobs />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
         </Route>
 
         {/* protected pages for admin */}
@@ -48,11 +47,9 @@ const App = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="applications" element={<Applications />} />
           <Route path="shortlisted" element={<Shortlisted />} />
-          <Route path="interviews" element={<Interviews />} />
-          <Route path="hired" element={<Hired />} />
           <Route path="job-management" element={<JobManagement />} />
-          <Route path="email-templates" element={<EmailTemplates />} />
-          <Route path="user-profile/:id" element={<UserDetails/>}/>
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="user-profile/:id" element={<UserDetails />} />
         </Route>
         {/* 404 page */}
         <Route path="*" element={<PageNotFound />} />

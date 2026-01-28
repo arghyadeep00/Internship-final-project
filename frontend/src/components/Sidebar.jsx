@@ -22,18 +22,13 @@ const Sidebar = () => {
         path: "/admin/applications",
       },
       { icon: <Layers2 />, name: "Shortlisted", path: "/admin/shortlisted" },
-      { icon: <UserStar />, name: "Interviews", path: "/admin/interviews" },
-      { icon: <LaptopMinimalCheck />, name: "Hired", path: "/admin/hired" },
+
       {
         icon: <BriefcaseBusiness />,
         name: "Jobs Management",
         path: "/admin/job-management",
       },
-      {
-        icon: <Mail />,
-        name: "Email Templates",
-        path: "/admin/email-templates",
-      },
+      { icon: <UserPen />, name: "My Profile", path: "/admin/profile" },
     ],
     user: [
       { icon: <House />, name: "Home", path: "/user/dashboard" },
@@ -48,7 +43,6 @@ const Sidebar = () => {
         path: "/user/applied-jobs",
       },
       { icon: <UserPen />, name: "My Profile", path: "/user/profile" },
-      { icon: <Settings />, name: "Settings", path: "/user/settings" },
     ],
   };
   return (

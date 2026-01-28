@@ -50,7 +50,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    phone: String,
+    phone: {
+      countryCode: String,
+      phoneNumber: String,
+    },
 
     gender: {
       type: String,

@@ -14,6 +14,7 @@ export const AdminGlobalProvider = ({ children }) => {
   const [shortlisted, setShortlisted] = useState(0);
   const [rejected, setRejected] = useState(0);
   const [recentApplications, setRecentApplications] = useState([]);
+  
   // fetch all jobs
   const fetchJobs = async () => {
     try {
@@ -39,9 +40,6 @@ export const AdminGlobalProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  // fetch all applications 
-
-  
 
   // for admin page
   const fetchRecentApplications = async () => {

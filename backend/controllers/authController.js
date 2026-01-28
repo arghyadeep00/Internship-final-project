@@ -7,11 +7,27 @@ import resumeUploadCloudinary from "../utils/resumeUploadCloudinary.js";
 /* REGISTER */
 export const register = async (req, res) => {
   try {
-    const { firstname, middlename, lastname, email, phone, domain, password } =
-      req.body;
+    const {
+      firstname,
+      middlename,
+      lastname,
+      email,
+      countryCode,
+      phoneNumber,
+      domain,
+      password,
+    } = req.body;
 
     // require all the fields
-    if (!firstname || !lastname || !email || !phone || !domain || !password) {
+    if (
+      !firstname ||
+      !lastname ||
+      !email ||
+      !domain ||
+      !password ||
+      !countryCode ||
+      !phoneNumber
+    ) {
       return res.status(400).json({
         success: false,
         message: "Require all the fields",
@@ -42,7 +58,10 @@ export const register = async (req, res) => {
       middlename,
       lastname,
       email,
-      phone,
+      phone: {
+        countryCode,
+        phoneNumber,
+      },
       domain,
       password: hashedPassword,
       resume: { url: result.secure_url, public_id: result.public_id },

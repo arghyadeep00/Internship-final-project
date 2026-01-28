@@ -6,6 +6,7 @@ import OtpBox from "../../components/OtpBox";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import domain from "../../utils/domain";
+import countryCodes from "../../utils/countryCode";
 
 const Register = () => {
   const otpDetails = [
@@ -28,6 +29,7 @@ const Register = () => {
 
   const [otpPopup, setOtpPopup] = useState(false);
   const [otpMessage, setOtpMessage] = useState({});
+  const [otpLoadin, setOtpLoading] = useState(false);
 
   const {
     register,
@@ -50,7 +52,8 @@ const Register = () => {
       formData.append("middlename", data.middlename);
       formData.append("lastname", data.lastname);
       formData.append("email", data.email);
-      formData.append("phone", data.phone);
+      formData.append("countryCode", data.countryCode);
+      formData.append("phoneNumber", data.phone);
       formData.append("password", data.confirmPassword);
       formData.append("domain", data.domain);
       formData.append("resume", data.resume[0]);
@@ -75,11 +78,13 @@ const Register = () => {
 
     const value = type === "email" ? email : phone;
     if (!value) return toast.error(`Enter ${type} first `);
+    setOtpLoading(true);
+    toast.success("OTP send successfylly");
     await api.post("/send-otp", { type, value });
-
     setOtpType(type);
     setOtpTarget(value);
     setOtpMessage([message]);
+    setOtpLoading(false);
     setOtpPopup(true);
   };
 
@@ -212,7 +217,7 @@ const Register = () => {
                     className={`border border-gray-200 w-[15%] cursor-pointer rounded ${
                       emailVerified ? "text-green-500" : "primary-color"
                     }`}
-                    disabled={emailVerified}
+                    disabled={otpLoadin || emailVerified}
                     onClick={() => openOtpBox("email")}
                   >
                     {emailVerified ? "Verified" : "Verify"}
@@ -228,44 +233,71 @@ const Register = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
+
                 <div className="flex gap-2">
+                  {/* Country Code */}
+                  <select
+                    className={`w-[10%] py-2 rounded-lg border focus:outline-none focus:ring-1 ${
+                      errors.email
+                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    }`}
+                    {...register("countryCode", {
+                      required: "Country code is required",
+                    })}
+                    defaultValue=""
+                  >
+                    <option value="">Code</option>
+                    {countryCodes.map((c) => (
+                      <option key={c.iso} value={c.dialCode}>
+                        {c.dialCode}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Phone */}
                   <input
                     type="text"
-                    placeholder="+91 00000-00000 (phone number verification temporary off | continue fill-up)"
-                    className={`w-[85%] px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${
-                      errors.phone
+                    placeholder="0000000000"
+                    className={`w-[75%] px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${
+                      errors.email
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                     }`}
                     {...register("phone", {
-                      // required: "Phone number is required",
+                      required: "Phone number is required",
                       pattern: {
-                        value: /^[6-9]\d{9}$/,
-                        message: "Enter valid phone number",
-                      },
-                      minLength: {
-                        value: 10,
-                        message: "Phone number must be 10 digit",
-                      },
-                      maxLength: {
-                        value: 13,
+                        value: /^[0-9]{6,14}$/,
                         message: "Enter valid phone number",
                       },
                     })}
                   />
+
+                  {/* Verify */}
                   <button
-                    className={`border border-gray-200 w-[15%] cursor-pointer rounded primary-color ${
-                      phoneVerified ? "text-green-500" : "primary-color"
+                    type="button"
+                    className={`border border-gray-200 w-[15%] cursor-pointer rounded ${
+                      emailVerified ? "text-green-500" : "primary-color"
                     }`}
-                    disabled
                     onClick={() => openOtpBox("phone")}
+                    disabled={!!errors.phone || !!errors.countryCode}
                   >
                     {phoneVerified ? "Verified" : "Verify"}
                   </button>
                 </div>
-                {errors.phone && (
-                  <p className="text-sm text-red-500">{errors.phone.message}</p>
-                )}
+                <div className="flex gap-5">
+                  {errors.countryCode && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.countryCode.message}
+                    </p>
+                  )}
+
+                  {errors.phone && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Passwords */}

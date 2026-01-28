@@ -100,10 +100,6 @@ const Login = () => {
 
             {/* Remember & Forgot */}
             <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" className="accent-purple-600" />
-                Remember me
-              </label>
               <Link
                 to="/forgot-password"
                 className="text-purple-600 hover:underline"
