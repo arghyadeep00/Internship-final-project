@@ -14,55 +14,16 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
-  const [applications, setApplications] = useState([]);
+  // global context
+  const {
+    recentApplications,
+    totalApplications,
+    pending,
+    shortlisted,
+    rejected,
+  } = useAdminGlobal();
+
   const navigate = useNavigate();
-
-  const [totalApplications, setTotalApplications] = useState(0);
-  const [pending, setPending] = useState(0);
-  const [shortlisted, setShortlisted] = useState(0);
-  const [rejected, setRejected] = useState(0);
-
-  const fetchRecentApplications = async () => {
-    try {
-      const response = await api.get("/application/recent-applications");
-      setApplications(response.data.resultData);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const fetchTotalApplications = async () => {
-    try {
-      const response = await api.get("/application/total-applications");
-      setTotalApplications(response.data.resultData);
-    } catch (error) {}
-  };
-  const fetchPending = async () => {
-    try {
-      const response = await api.get("/application/pending");
-      setPending(response.data.resultData);
-    } catch (error) {}
-  };
-  const fetchShortlisted = async () => {
-    try {
-      const response = await api.get("/application/shortlisted");
-      setShortlisted(response.data.resultData);
-    } catch (error) {}
-  };
-  const fetchRejected = async () => {
-    try {
-      const response = await api.get("/application/rejected");
-      setRejected(response.data.resultData);
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    fetchRecentApplications();
-    fetchTotalApplications();
-    fetchPending();
-    fetchShortlisted();
-    fetchRejected();
-  }, []);
 
   return (
     <DashboardLayout>
@@ -123,7 +84,7 @@ const AdminDashboard = () => {
         <h2 className="text-lg font-semibold mb-4">Recent Applications</h2>
 
         <div className="overflow-x-auto">
-          {applications.length === 0 ? (
+          {recentApplications.length == 0 ? (
             <p className="text-center roboto-flex">
               NO APPLICATION FOUND LAST 5 DAYS
             </p>
@@ -141,7 +102,7 @@ const AdminDashboard = () => {
               </thead>
 
               <tbody>
-                {applications.map((item) => (
+                {recentApplications.map((item) => (
                   <tr
                     className="hover:bg-blue-50 cursor-pointer odd:bg-white even:bg-gray-50"
                     key={item._id}
