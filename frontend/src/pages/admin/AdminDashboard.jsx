@@ -1,23 +1,68 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { Users, FileText, CheckCircle, XCircle } from "lucide-react";
+import {
+  Users,
+  CheckCircle,
+  XCircle,
+  LayoutGrid,
+  Hourglass,
+} from "lucide-react";
 import { useAdminGlobal } from "../../context/AdminContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import statusColor from "../../styles/statusColor";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
-  const { applicants, applications } = useAdminGlobal();
+  const [applications, setApplications] = useState([]);
   const navigate = useNavigate();
 
-  const lastFiveDaysData = applications
-    .filter((item) => {
-      const createdDate = new Date(item.createdAt);
-      const fiveDaysAgo = new Date();
-      fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [pending, setPending] = useState(0);
+  const [shortlisted, setShortlisted] = useState(0);
+  const [rejected, setRejected] = useState(0);
 
-      return createdDate >= fiveDaysAgo;
-    })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const fetchRecentApplications = async () => {
+    try {
+      const response = await api.get("/application/recent-applications");
+      setApplications(response.data.resultData);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const fetchTotalApplications = async () => {
+    try {
+      const response = await api.get("/application/total-applications");
+      setTotalApplications(response.data.resultData);
+    } catch (error) {}
+  };
+  const fetchPending = async () => {
+    try {
+      const response = await api.get("/application/pending");
+      setPending(response.data.resultData);
+    } catch (error) {}
+  };
+  const fetchShortlisted = async () => {
+    try {
+      const response = await api.get("/application/shortlisted");
+      setShortlisted(response.data.resultData);
+    } catch (error) {}
+  };
+  const fetchRejected = async () => {
+    try {
+      const response = await api.get("/application/rejected");
+      setRejected(response.data.resultData);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchRecentApplications();
+    fetchTotalApplications();
+    fetchPending();
+    fetchShortlisted();
+    fetchRejected();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -35,21 +80,29 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <div className="bg-white p-5 rounded-xl shadow-sm bosm">
           <div className="flex items-center gap-3">
-            <Users className="text-blue-600" />
+            <LayoutGrid className="text-purple-600" />
             <div>
               <p className="text-sm text-gray-500">Total Applications</p>
-              <h2 className="text-xl font-semibold">{applicants.length}</h2>
+              <h2 className="text-xl font-semibold">{totalApplications}</h2>
             </div>
           </div>
         </div>
 
-        
+        <div className="bg-white p-5 rounded-xl shadow-sm">
+          <div className="flex items-center gap-3">
+            <Hourglass className="text-blue-600" />
+            <div>
+              <p className="text-sm text-gray-500">Pending</p>
+              <h2 className="text-xl font-semibold">{pending}</h2>
+            </div>
+          </div>
+        </div>
         <div className="bg-white p-5 rounded-xl shadow-sm">
           <div className="flex items-center gap-3">
             <CheckCircle className="text-green-600" />
             <div>
               <p className="text-sm text-gray-500">Shortlisted</p>
-              <h2 className="text-xl font-semibold">28</h2>
+              <h2 className="text-xl font-semibold">{shortlisted}</h2>
             </div>
           </div>
         </div>
@@ -59,7 +112,7 @@ const AdminDashboard = () => {
             <XCircle className="text-red-500" />
             <div>
               <p className="text-sm text-gray-500">Rejected</p>
-              <h2 className="text-xl font-semibold">12</h2>
+              <h2 className="text-xl font-semibold">{rejected}</h2>
             </div>
           </div>
         </div>
@@ -70,53 +123,57 @@ const AdminDashboard = () => {
         <h2 className="text-lg font-semibold mb-4">Recent Applications</h2>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="border-b border-gray-300">
-              <tr className="text-left text-gray-700 ">
-                <th className="pb-3">Job Title</th>
-                <th className="pb-3">Name</th>
-                <th className="pb-3">Domin</th>
-                <th className="pb-3">Status</th>
-                <th className="pb-3">Apply Date</th>
-                <th className="pb-3">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {lastFiveDaysData.map((item) => (
-                <tr
-                  className="hover:bg-blue-50 cursor-pointer odd:bg-white even:bg-gray-50"
-                  key={item._id}
-                  onClick={() => navigate(`/admin/user-profile/${item.user._id}`)}
-                >
-                  <td className="py-3 text-blue-700 font-bold">
-                    {item?.job?.title}
-                  </td>
-                  <td className="py-3">{item?.user?.firstname}</td>
-                  <td>{item?.user?.domain}</td>
-                  <td>
-                    <span
-                      className={`px-2 py-1 text-xs rounded ${statusColor[item?.status]}`}
-                    >
-                      {item?.status}
-                    </span>
-                  </td>
-                  <td>
-                    {new Date(item?.createdAt).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td>
-                    <button className="text-blue-600 hover:underline">
-                      View
-                    </button>
-                  </td>
+          {applications.length === 0 ? (
+            <p className="text-center roboto-flex">
+              NO APPLICATION FOUND LAST 5 DAYS
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="border-b border-gray-300">
+                <tr className="text-left text-gray-700 ">
+                  <th className="pb-3">Job Title</th>
+                  <th className="pb-3">Name</th>
+                  <th className="pb-3">Email</th>
+                  <th className="pb-3">Domin</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Apply Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {applications.map((item) => (
+                  <tr
+                    className="hover:bg-blue-50 cursor-pointer odd:bg-white even:bg-gray-50"
+                    key={item._id}
+                    onClick={() =>
+                      navigate(`/admin/user-profile/${item.user._id}`)
+                    }
+                  >
+                    <td className="py-3 text-blue-700 font-bold">
+                      {item?.job?.title}
+                    </td>
+                    <td className="py-3">{item?.user?.firstname}</td>
+                    <td className="py-3">{item?.user?.email}</td>
+                    <td>{item?.user?.domain}</td>
+                    <td>
+                      <span
+                        className={`px-2 py-1 text-xs rounded ${statusColor[item?.status]}`}
+                      >
+                        {item?.status}
+                      </span>
+                    </td>
+                    <td>
+                      {new Date(item?.createdAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </DashboardLayout>

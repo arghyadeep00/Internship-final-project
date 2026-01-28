@@ -129,3 +129,100 @@ export const searchApplication = async (req, res) => {
     });
   }
 };
+
+export const recentApplications = async (req, res) => {
+  try {
+    // Get date of 5 days ago
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
+    const applications = await Application.find({
+      createdAt: { $gte: fiveDaysAgo },
+    })
+      .populate(
+        "user",
+        "firstname middlename lastname email phone domain skills experience resume",
+      )
+      .populate(
+        "job",
+        "title department jobType experience description skills closingDate createdAt",
+      )
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      total: applications.length,
+      resultData: applications,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch last 5 days applications",
+      error: error.message,
+    });
+  }
+};
+
+export const totalApplications = async (req, res) => {
+  try {
+    const response = await Application.countDocuments({});
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const pending = async (req, res) => {
+  try {
+    const response = await Application.countDocuments({ status: "Pending" });
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error: error.message,
+    });
+  }
+};
+export const shortListed = async (req, res) => {
+  try {
+    const response = await Application.countDocuments({
+      status: "Shortlisted",
+    });
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error: error.message,
+    });
+  }
+};
+export const rejected = async (req, res) => {
+  try {
+    const response = await Application.countDocuments({ status: "Rejected" });
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+      error: error.message,
+    });
+  }
+};

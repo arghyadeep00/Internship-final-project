@@ -9,7 +9,7 @@ import domain from "../../utils/domain";
 const Applications = () => {
   const navigate = useNavigate();
 
-  const [applications, setApplications] = useState();
+  const [applications, setApplications] = useState([]);
   const [editStatus, setEditStatus] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState([]);
 
@@ -164,7 +164,7 @@ const Applications = () => {
 
       {/* Applications Table */}
       <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
-        {!applications ? (
+        {applications.length == 0 ? (
           <div className="text-center p-4">No applicant present</div>
         ) : (
           <table className="w-full text-sm border-collapse">
