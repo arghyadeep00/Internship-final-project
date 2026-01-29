@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api";
 
-const OtpBox = ({ visible, onClose, description, otpTarget, onVerified }) => {
+const OtpBox = ({ visible, description, otpTarget, onClose, onVerified }) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   if (!visible) return null;
+  
 
   const verifyOtp = async () => {
     if (otp.length !== 6) return;

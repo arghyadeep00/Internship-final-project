@@ -16,7 +16,7 @@ const Register = () => {
       message: "Enter the verification code sent to your email address.",
     },
     {
-      id: "phone",
+      id: "phoneNumber",
       title: "Verify Your Phone Number",
       message: "Enter the verification code sent to your mobile number",
     },
@@ -40,8 +40,8 @@ const Register = () => {
   } = useForm();
 
   let email = watch("email");
-  let phone = watch("phone");
-  let password = watch("password");
+  let countryCode = watch("countryCode");
+  let phoneNumber = watch("phoneNumber");
 
   // const onSubmit = (data) => console.log(data);
   const onSubmit = async (data) => {
@@ -53,7 +53,7 @@ const Register = () => {
       formData.append("lastname", data.lastname);
       formData.append("email", data.email);
       formData.append("countryCode", data.countryCode);
-      formData.append("phoneNumber", data.phone);
+      formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.confirmPassword);
       formData.append("domain", data.domain);
       formData.append("resume", data.resume[0]);
@@ -75,21 +75,36 @@ const Register = () => {
 
   const openOtpBox = async (type) => {
     const message = otpDetails.find((f) => f.id === type);
+    const value = type == "email" ? email : phoneNumber;
+    if (type === "phoneNumber") {
+      if (!countryCode) {
+        toast.error("Enter country code first");
+      }
+    }
 
-    const value = type === "email" ? email : phone;
     if (!value) return toast.error(`Enter ${type} first `);
-    setOtpLoading(true);
     toast.success("OTP send successfylly");
-    await api.post("/send-otp", { type, value });
-    setOtpType(type);
-    setOtpTarget(value);
+    setOtpLoading(true);
     setOtpMessage([message]);
-    setOtpLoading(false);
+    setOtpTarget(value);
+    setOtpType(type);
     setOtpPopup(true);
+    await api.post("/send-otp", { type, value, countryCode });
+    setOtpLoading(false);
   };
 
   return (
     <div>
+      {/* Verify Popup */}
+      <OtpBox
+        visible={otpPopup}
+        description={otpMessage}
+        otpTarget={otpTarget}
+        onClose={() => setOtpPopup(false)}
+        onVerified={() =>
+          otpType === "email" ? setEmailVerified(true) : setPhoneVerified(true)
+        }
+      />
       <Navbar />
 
       <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-purple-50 via-white to-indigo-50">
@@ -238,14 +253,13 @@ const Register = () => {
                   {/* Country Code */}
                   <select
                     className={`w-[10%] py-2 rounded-lg border focus:outline-none focus:ring-1 ${
-                      errors.email
+                      errors.countryCode
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                     }`}
                     {...register("countryCode", {
                       required: "Country code is required",
                     })}
-                    defaultValue=""
                   >
                     <option value="">Code</option>
                     {countryCodes.map((c) => (
@@ -260,11 +274,11 @@ const Register = () => {
                     type="text"
                     placeholder="0000000000"
                     className={`w-[75%] px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${
-                      errors.email
+                      errors.phoneNumber
                         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                         : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                     }`}
-                    {...register("phone", {
+                    {...register("phoneNumber", {
                       required: "Phone number is required",
                       pattern: {
                         value: /^[0-9]{6,14}$/,
@@ -277,10 +291,9 @@ const Register = () => {
                   <button
                     type="button"
                     className={`border border-gray-200 w-[15%] cursor-pointer rounded ${
-                      emailVerified ? "text-green-500" : "primary-color"
+                      phoneVerified ? "text-green-500" : "primary-color"
                     }`}
-                    onClick={() => openOtpBox("phone")}
-                    disabled={!!errors.phone || !!errors.countryCode}
+                    onClick={() => openOtpBox("phoneNumber")}
                   >
                     {phoneVerified ? "Verified" : "Verify"}
                   </button>
@@ -292,9 +305,9 @@ const Register = () => {
                     </p>
                   )}
 
-                  {errors.phone && (
+                  {errors.phoneNumber && (
                     <p className="text-sm text-red-500 mt-1">
-                      {errors.phone.message}
+                      {errors.phoneNumber.message}
                     </p>
                   )}
                 </div>
@@ -476,19 +489,6 @@ const Register = () => {
             </div>
           </div>
         </div>
-
-        {/* Verify Popup */}
-        <OtpBox
-          visible={otpPopup}
-          description={otpMessage}
-          otpTarget={otpTarget}
-          onClose={() => setOtpPopup(false)}
-          onVerified={() =>
-            otpType === "email"
-              ? setEmailVerified(true)
-              : setPhoneVerified(true)
-          }
-        />
       </div>
     </div>
   );
