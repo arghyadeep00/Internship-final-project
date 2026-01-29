@@ -226,3 +226,28 @@ export const rejected = async (req, res) => {
     });
   }
 };
+
+export const shortlistedApplicants = async (req, res) => {
+  try {
+    const response = await Application.find({ status: "Shortlisted" })
+      .populate(
+        "user",
+        "firstname middlename lastname email phone domain skills experience resume",
+      )
+      .populate(
+        "job",
+        "title department jobType experience description skills closingDate createdAt",
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      resultData: response,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "internal server error",
+    });
+  }
+};

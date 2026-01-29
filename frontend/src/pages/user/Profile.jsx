@@ -10,6 +10,7 @@ import api from "../../services/api";
 
 const Profile = () => {
   const { user, fetchUser, fetchApplicants } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
   // for open edit forms
@@ -164,7 +165,7 @@ const Profile = () => {
     try {
       const formData = new FormData();
       formData.append("resume", resumeFile);
-
+      setLoading(true);
       const res = await api.patch("/user/resume", formData, {
         headers: {
           "Content-Type": "application/pdf",
@@ -172,10 +173,12 @@ const Profile = () => {
       });
       console.log(res);
       toast.success(res.data.message);
+
       fetchUser();
     } catch (error) {
       toast.error("File can't update");
     } finally {
+      setLoading(false);
       setResume(false);
     }
   };
@@ -284,12 +287,19 @@ const Profile = () => {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {user?.skills?.map((skill) => (
+              {user?.skills?.map((skill, key) => (
                 <span
-                  key={skill}
-                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded"
+                  key={key}
+                  className="px-3 py-1 text-sm flex gap-4 rounded"
                 >
-                  {skill}
+                  {skill.split(",").map((e, key) => (
+                    <p
+                      key={key}
+                      className=" bg-blue-100 px-2 py-1 rounded-md text-blue-700"
+                    >
+                      {e}
+                    </p>
+                  ))}
                 </span>
               ))}
             </div>
@@ -319,7 +329,7 @@ const Profile = () => {
           </div>
           {user?.education?.map((e) => (
             <div
-              className="space-y-2 mt-3 border p-2 rounded border-gray-100 shadow"
+              className="space-y-2 px-5 mt-3  p-2 rounded border-gray-100 shadow"
               key={e.level}
             >
               <p className="font-medium">{e.level}</p>
@@ -338,32 +348,42 @@ const Profile = () => {
         </div>
 
         {/* Resume */}
-        <div className="bg-white shadow rounded-lg p-6 flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-xl">
-              <div className="flex justify-between">
-                <div className="flex gap-2 text-gray-800">
-                  {" "}
-                  <File />
-                  Resume
-                </div>
-                <Eye
-                  className="cursor-pointer"
-                  onClick={() => window.open(user?.resume.url, "_blank")}
-                />
-              </div>
-            </h3>
-            <p className="text-sm text-gray-500 mt-3">
+        <div className="bg-white shadow-md transition rounded-xl p-6 flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-gray-800 font-semibold text-lg">
+              <File className="w-5 h-5 text-indigo-600" />
+              Resume
+            </div>
+
+            <p className="text-sm text-gray-500">
               Upload or update your resume
             </p>
+
+            {user?.resume?.url ? (
+              <button
+                onClick={() =>
+                  window.open(
+                    `https://docs.google.com/gview?url=${user.resume.url}&embedded=true`,
+                    "_blank",
+                  )
+                }
+                className="mt-2 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 underline"
+              >
+                <Eye className="w-4 h-4" />
+                View Resume
+              </button>
+            ) : (
+              <p className="mt-2 text-sm text-red-500">No resume uploaded</p>
+            )}
           </div>
 
-          <div>
-            <SquarePen
-              className="cursor-pointer"
-              onClick={() => setResume(true)}
-            />
-          </div>
+          <button
+            onClick={() => setResume(true)}
+            className="p-2 rounded-full hover:bg-gray-100 transition"
+            title="Edit Resume"
+          >
+            <SquarePen className="w-5 h-5 text-gray-700" />
+          </button>
         </div>
       </div>
 
@@ -770,7 +790,10 @@ const Profile = () => {
               htmlFor="resume"
               className="w-full border border-gray-400 rounded-md flex justify-center cursor-pointer"
             >
-              <img src="/uploadIcon.png" width={200} alt="" />
+              {
+                resumeFile? <img src="/done.png" width={200} alt="" /> : <img src="/uploadIcon.png" width={200} alt="" />
+              }
+              
               <input
                 type="file"
                 id="resume"
@@ -790,9 +813,10 @@ const Profile = () => {
                 onClick={() => {
                   handleResumeSave();
                 }}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                disabled={loading}
+                className={`px-4 py-2  text-white rounded  ${loading ? "bg-blue-500" : "bg-blue-600 hover:bg-blue-700"} `}
               >
-                Save
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           </div>

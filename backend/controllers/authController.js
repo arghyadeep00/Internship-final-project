@@ -16,6 +16,8 @@ export const register = async (req, res) => {
       phoneNumber,
       domain,
       password,
+      isEmailVerified,
+      isPhoneVerified,
     } = req.body;
 
     // require all the fields
@@ -62,6 +64,8 @@ export const register = async (req, res) => {
         countryCode,
         phoneNumber,
       },
+      isEmailVerified,
+      isPhoneVerified,
       domain,
       password: hashedPassword,
       resume: { url: result.secure_url, public_id: result.public_id },

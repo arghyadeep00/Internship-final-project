@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
+import api from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import statusColor from "../../styles/statusColor";
 
 const Shortlisted = () => {
+  const navigate = useNavigate();
+  const [applications, setApplications] = useState([]);
+  const fetchShortListed = async () => {
+    try {
+      const response = await api.get("/application/shortlisted-applicants");
+      setApplications(response.data.resultData);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchShortListed();
+  }, []);
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -43,76 +59,95 @@ const Shortlisted = () => {
 
       {/* Shortlisted Table */}
       <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className=" bg-gray-50">
-            <tr className="text-left text-gray-600">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Experience</th>
-              <th className="px-4 py-3">Interview Date</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
+        {applications.length === 0 ? (
+          <p className="text-center p-4">No shortlisted applicent present</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className=" bg-gray-50">
+              <tr className="text-center text-gray-600">
+                <th className="px-4 py-3">Job Title</th>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">Domain</th>
+                <th className="px-4 py-3">Resume</th>
+                <th className="px-4 py-3">Experience</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Applied On</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            <tr className="">
-              <td className="px-4 py-3">Ananya Das</td>
-              <td>ananya@gmail.com</td>
-              <td>Frontend Developer</td>
-              <td>2 Years</td>
-              <td>25 Jan 2026</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                  Shortlisted
-                </span>
-              </td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">
-                  View
-                </button>
-                <button className="text-purple-600 hover:underline">
-                  Schedule
-                </button>
-              </td>
-            </tr>
+            <tbody>
+              {applications.map((e) => (
+                <tr
+                  key={e._id}
+                  className="text-center odd:bg-white cursor-pointer  even:bg-gray-50 hover:bg-blue-50"
+                  onClick={() => navigate(`/admin/user-profile/${e.user._id}`)}
+                >
+                  <td className="px-4 py-3 text-blue-700 font-bold">
+                    {e?.job?.title}
+                  </td>
+                  <td className="px-4 py-3">{e?.user?.firstname}</td>
+                  <td>{e?.user?.email}</td>
+                  <td>{e?.user?.domain}</td>
+                  {e?.user?.resume?.url ? (
+                    <td
+                      className="underline text-blue-600 cursor-pointer"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        window.open(
+                          `https://docs.google.com/gview?url=${e?.user?.resume?.url}&embedded=true`,
+                          "_blank",
+                        );
+                      }}
+                    >
+                      View
+                    </td>
+                  ) : (
+                    <td>-</td>
+                  )}
 
-            <tr>
-              <td className="px-4 py-3">Rohit Verma</td>
-              <td>rohit@gmail.com</td>
-              <td>Backend Developer</td>
-              <td>3 Years</td>
-              <td>27 Jan 2026</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                  Shortlisted
-                </span>
-              </td>
-              <td className="space-x-2">
-                <button className="text-blue-600 hover:underline">
-                  View
-                </button>
-                <button className="text-purple-600 hover:underline">
-                  Schedule
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <td>{e?.user?.experience || "-"}</td>
+                  <td>
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${statusColor[e?.status]}`}
+                    >
+                      {e?.status}
+                    </span>
+                  </td>
+                  <td>
+                    {new Date(e?.createdAt).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="space-x-2">
+                    <button
+                      className="text-green-600 hover:underline"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        userStatusUpdate(e._id);
+                      }}
+                    >
+                      Update Status
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination */}
       <div className="mt-6 flex justify-end gap-2">
-        <button className="px-4 py-2  rounded-lg text-sm">
-          Previous
-        </button>
+        <button className="px-4 py-2  rounded-lg text-sm">Previous</button>
         <button className="px-4 py-2  rounded-lg text-sm bg-green-600 text-white">
           1
         </button>
-        <button className="px-4 py-2  rounded-lg text-sm">
-          Next
-        </button>
+        <button className="px-4 py-2  rounded-lg text-sm">Next</button>
       </div>
     </DashboardLayout>
   );

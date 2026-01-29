@@ -40,12 +40,22 @@ const Register = () => {
   } = useForm();
 
   let email = watch("email");
+  let password = watch("password");
   let countryCode = watch("countryCode");
   let phoneNumber = watch("phoneNumber");
 
   // const onSubmit = (data) => console.log(data);
   const onSubmit = async (data) => {
     try {
+      if (emailVerified === false) {
+        return toast.error("Please verify email first");
+      }
+
+      //******** PHONE VERIFICAITON IS DISABLE FOR TWILIO PAID API **********//
+
+      // if (phoneVerified === false) {
+      //   return toast.error("Please verify Phone Number first");
+      // }
       setLoading(true);
       const formData = new FormData();
       formData.append("firstname", data.firstname);
@@ -56,6 +66,8 @@ const Register = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.confirmPassword);
       formData.append("domain", data.domain);
+      formData.append("isEmailVerified", emailVerified);
+      formData.append("isPhoneVerified", phoneVerified);
       formData.append("resume", data.resume[0]);
 
       const response = await api.post("/auth/register", formData, {

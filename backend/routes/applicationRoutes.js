@@ -10,6 +10,7 @@ import {
   shortListed,
   rejected,
   pending,
+  shortlistedApplicants,
 } from "../controllers/applicationController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -41,5 +42,12 @@ router.get(
 router.get("/pending", verifyToken, authorize("admin"), pending);
 router.get("/shortlisted", verifyToken, authorize("admin"), shortListed);
 router.get("/rejected", verifyToken, authorize("admin"), rejected);
+
+router.get(
+  "/shortlisted-applicants",
+  verifyToken,
+  authorize("admin"),
+  shortlistedApplicants,
+);
 
 export default router;

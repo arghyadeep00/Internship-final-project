@@ -200,7 +200,10 @@ const Applications = () => {
                       className="underline text-blue-600 cursor-pointer"
                       onClick={(event) => {
                         event.stopPropagation();
-                        window.open(e?.user?.resume?.url, "_blank");
+                        window.open(
+                          `https://docs.google.com/gview?url=${e?.user?.resume?.url}&embedded=true`,
+                          "_blank",
+                        );
                       }}
                     >
                       View

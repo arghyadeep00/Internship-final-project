@@ -56,6 +56,18 @@ const UserProfile = () => {
                       : "bg-red-100 text-red-700"
                   }
                 />
+                <Badge
+                  text={
+                    user.isPhoneVerified
+                      ? "Phone Number Verified"
+                      : "Phone Number Not Verified"
+                  }
+                  color={
+                    user.isPhoneVerified
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }
+                />
               </div>
             </div>
           </div>
