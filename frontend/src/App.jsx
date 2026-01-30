@@ -22,6 +22,7 @@ import UserLayout from "./layouts/UserLayout";
 import UserDetails from "./pages/admin/UserProfile";
 import UserProfile from "./pages/admin/UserProfile";
 import AdminProfile from "./pages/admin/AdminProfile";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/applicant-register" element={<Register />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* protected pages for applicant */}
 

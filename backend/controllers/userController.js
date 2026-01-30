@@ -19,7 +19,6 @@ export const avatar = async (req, res) => {
 
     // new image upload
     const uploadAvatar = await avatarUploadCloudinary(req.file.buffer);
-
     await User.findByIdAndUpdate(
       req.user.id,
       {
@@ -38,7 +37,6 @@ export const avatar = async (req, res) => {
       message: "Profile update success",
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });

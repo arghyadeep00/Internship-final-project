@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="flex flex-col  bg-gray-100">
       {/* Top Navbar */}
       <Navbar />
 

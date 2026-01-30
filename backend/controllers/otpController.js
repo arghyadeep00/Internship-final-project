@@ -12,7 +12,6 @@ export const sendOtp = async (req, res) => {
 
     // generate otp
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    // expire time
     const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
 
     await Otp.deleteMany({ value });

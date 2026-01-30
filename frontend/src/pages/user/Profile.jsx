@@ -92,7 +92,9 @@ const Profile = () => {
       toast.success(res.data.message);
       fetchUser();
     } catch (error) {
-      toast.error("Profile picture update filed");
+      toast.error(
+        error?.response?.data?.message || "Profile picture update filed check image si",
+      );
     } finally {
       setEditAvatar(false);
     }
@@ -242,7 +244,9 @@ const Profile = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-500">Phone</span>
-                <span>{user?.phone}</span>
+                <span>
+                  {user?.phone?.countryCode} {user?.phone?.phoneNumber}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Gender</span>
@@ -423,7 +427,10 @@ const Profile = () => {
             />
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => setEditAvatar(false)}
+                onClick={() => {
+                  setEditAvatar(false);
+                  setImagePreview(null);
+                }}
                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancel
@@ -790,10 +797,12 @@ const Profile = () => {
               htmlFor="resume"
               className="w-full border border-gray-400 rounded-md flex justify-center cursor-pointer"
             >
-              {
-                resumeFile? <img src="/done.png" width={200} alt="" /> : <img src="/uploadIcon.png" width={200} alt="" />
-              }
-              
+              {resumeFile ? (
+                <img src="/done.png" width={200} alt="" />
+              ) : (
+                <img src="/uploadIcon.png" width={200} alt="" />
+              )}
+
               <input
                 type="file"
                 id="resume"

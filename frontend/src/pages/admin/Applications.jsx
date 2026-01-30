@@ -1,5 +1,5 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import statusColor from "../../styles/statusColor";
@@ -69,9 +69,12 @@ const Applications = () => {
     setApplications(res.data.applications);
     setTotalPages(res.data.totalPages);
   };
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
     fetchApplications();
+    hasFetched.current = true;
   }, [currentPage]);
 
   const handlePrev = () => {
