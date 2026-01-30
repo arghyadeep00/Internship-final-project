@@ -42,6 +42,7 @@ const Navbar = () => {
         </div>
       ) : (
         <div ref={dropdownRef} className="relative">
+          
           <img
             src={user?.avatar?.url || "/user.png"}
             alt="profile"
@@ -51,16 +52,27 @@ const Navbar = () => {
 
           {open && (
             <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow z-50">
-              <Link
-                to="/user/profile"
-                onClick={() => setOpen(false)}
-                className="block px-4 py-2 text-md text-gray-700 hover:bg-purple-50"
-              >
-                <span className="flex items-center gap-3">
-                  <UserPen size={18} /> Profile
-                </span>
-              </Link>
-
+              {user?.role === "user" ? (
+                <Link
+                  to="/user/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-2 text-md text-gray-700 hover:bg-purple-50"
+                >
+                  <span className="flex items-center gap-3">
+                    <UserPen size={18} /> Dashboard
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  to="/admin/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-2 text-md text-gray-700 hover:bg-purple-50"
+                >
+                  <span className="flex items-center gap-3">
+                    <UserPen size={18} /> Dashboard
+                  </span>
+                </Link>
+              )}
 
               <button
                 onClick={(e) => {

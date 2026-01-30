@@ -3,19 +3,19 @@ import Sidebar from "../components/Sidebar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="flex flex-col  bg-gray-100">
-      {/* Top Navbar */}
-      <Navbar />
+    <div className="h-screen flex flex-col bg-gray-100">
+      <div className="h-16 bg-white/80 backdrop-blur shadow sticky top-0 z-50">
+        <Navbar />
+      </div>
 
       {/* Body */}
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <Sidebar />
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-64 bg-white shadow-lg hidden md:block overflow-y-auto">
+          <Sidebar />
+        </div>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          {children}
-        </main>
+        {/* Main Content - Scrollable */}
+        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
       </div>
     </div>
   );
