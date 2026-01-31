@@ -73,7 +73,7 @@ const Shortlisted = () => {
                 <th className="px-4 py-3">Experience</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Applied On</th>
-                <th className="px-4 py-3">Status</th>
+
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>

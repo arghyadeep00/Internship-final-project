@@ -6,9 +6,6 @@ import { UserPen } from "lucide-react";
 import { Settings } from "lucide-react";
 import { LayoutGrid } from "lucide-react";
 import { Layers2 } from "lucide-react";
-import { UserStar } from "lucide-react";
-import { LaptopMinimalCheck } from "lucide-react";
-import { Mail } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 const Sidebar = () => {

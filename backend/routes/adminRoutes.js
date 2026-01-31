@@ -5,6 +5,7 @@ import {
   getAllApplications,
   updateApplicationStatus,
   fetchUser,
+  adminProfile,
 } from "../controllers/adminController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -13,6 +14,9 @@ const router = express.Router();
 router.post("/register", adminRegister);
 // admin login
 router.post("/login", adminLogin);
+
+// admin profile
+router.get("/profile", verifyToken, authorize("admin"), adminProfile);
 
 router.get(
   "/applications",

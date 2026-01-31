@@ -85,11 +85,22 @@ export const applyJob = async (req, res) => {
         message: "Alrady applied",
       });
     }
+    const job = await Job.findById(jobId);
 
+    const closingDate = new Date(job.closingDate);
+    const currentDate = new Date();
+
+    if (closingDate < currentDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Job is expired",
+      });
+    }
     await Application.create({
       user: userId,
       job: jobId,
     });
+
     return res.status(201).json({
       success: true,
       message: "application successfully",

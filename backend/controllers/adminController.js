@@ -133,3 +133,20 @@ export const fetchUser = async (req, res) => {
     return res.status(500).json({ success: false, message: error?.message });
   }
 };
+// ADMIN PROFILE
+export const adminProfile = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const resposne = await Admin.findById(id, "-password");
+
+    return res.status(200).json({
+      success: false,
+      resultData: resposne,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.response.message || "Internal server Error",
+    });
+  }
+};

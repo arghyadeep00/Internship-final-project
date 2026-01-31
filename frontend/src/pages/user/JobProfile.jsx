@@ -30,9 +30,10 @@ const JobProfile = () => {
       const res = await api.get("/job/fetch-applied-jobs");
       setAppliedJobs(res.data.resultData);
     } catch (error) {
-      toast.error("error");
+     toast.error(error.response.data.message || "Job fetch error");
     }
   };
+
   const applyJob = async (id) => {
     try {
       const response = await api.post("/job/apply-job", { id });
@@ -40,8 +41,7 @@ const JobProfile = () => {
       fetchJobs();
       fetchAppliedJobs();
     } catch (error) {
-      console.log(error);
-      toast.error("Can't post job");
+      toast.error(error.response.data.message || "Can't post job");
     }
   };
 

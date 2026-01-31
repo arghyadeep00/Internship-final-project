@@ -47,10 +47,10 @@ const Applications = () => {
         status,
         applicationId,
       });
+      
       toast.success(response.data.message);
       fetchApplications();
     } catch (error) {
-      console.log(error);
       toast.error("Status update filed");
     } finally {
       setEditStatus(false);

@@ -1,36 +1,28 @@
+import { useAdminGlobal } from "../../context/AdminContext";
 import DashboardLayout from "../../layouts/DashboardLayout";
 
 const AdminProfile = () => {
-  const admin = {
-    name: "Admin Name",
-    email: "admin@example.com",
-    role: "Administrator",
-    phone: "+91 98765 43210",
-    company: "ABC Pvt Ltd",
-    joinedAt: "12 Jan 2024",
-  };
-
+  const { adminDetails } = useAdminGlobal();
+ 
   return (
     <DashboardLayout>
       <div className="p-6 max-w-8xl mx-auto">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-          Admin Profile
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Admin Profile</h1>
 
         {/* Profile Card */}
         <div className="bg-white shadow rounded-lg p-6 flex items-center gap-6">
           <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold">
-            {admin.name.charAt(0)}
+            {adminDetails?.name?.charAt(0)}
           </div>
 
           <div>
             <h2 className="text-xl font-semibold text-gray-800">
-              {admin.name}
+              {adminDetails.name}
             </h2>
-            <p className="text-gray-500">{admin.role}</p>
+            <p className="text-gray-500">{adminDetails.role}</p>
             <p className="text-sm text-gray-400">
-              Joined on {admin.joinedAt}
+              Joined on {new Date(adminDetails.createdAt).toLocaleDateString("en-IN")}
             </p>
           </div>
         </div>
@@ -43,24 +35,19 @@ const AdminProfile = () => {
             <div className="space-y-3 text-sm">
               <p>
                 <span className="font-medium text-gray-600">Email:</span>{" "}
-                {admin.email}
+                {adminDetails?.email}
               </p>
               <p>
                 <span className="font-medium text-gray-600">Phone:</span>{" "}
-                {admin.phone}
+                {adminDetails?.phone}
               </p>
-              <p>
-                <span className="font-medium text-gray-600">Company:</span>{" "}
-                {admin.company}
-              </p>
+              
             </div>
           </div>
 
           {/* Permissions / Role */}
           <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">
-              Admin Permissions
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Admin Permissions</h3>
 
             <ul className="list-disc list-inside text-sm text-gray-600 space-y-2">
               <li>Post & manage jobs</li>

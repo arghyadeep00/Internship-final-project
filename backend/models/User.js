@@ -35,7 +35,7 @@ const appliedJobSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema(
   {
     firstname: { type: String, required: true, trim: true },
-    middlename: { type: String, trim: true, default: null },
+    middlename: { type: String, trim: true },
     lastname: { type: String, required: true, trim: true },
 
     avatar: {

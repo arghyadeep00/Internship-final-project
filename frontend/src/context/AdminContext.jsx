@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 const AdminGlobalContext = createContext();
 
 export const AdminGlobalProvider = ({ children }) => {
+  const [adminDetails, setAdminDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [applicants, setApplicants] = useState([]);
@@ -14,7 +15,17 @@ export const AdminGlobalProvider = ({ children }) => {
   const [shortlisted, setShortlisted] = useState(0);
   const [rejected, setRejected] = useState(0);
   const [recentApplications, setRecentApplications] = useState([]);
-  
+
+  //
+  const fetchAdminDetails = async () => {
+    try {
+      const response = await api.get("/admin/profile");
+
+      setAdminDetails(response.data.resultData);
+    } catch (error) {
+      toast.error(error.response.message || "fetch admin details filed");
+    }
+  };
   // fetch all jobs
   const fetchJobs = async () => {
     try {
@@ -77,6 +88,7 @@ export const AdminGlobalProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    fetchAdminDetails();
     fetchJobs();
     fetchApplicants();
     fetchRecentApplications();
@@ -90,6 +102,7 @@ export const AdminGlobalProvider = ({ children }) => {
     <AdminGlobalContext.Provider
       value={{
         jobs,
+        adminDetails,
         setJobs,
         applicants,
         setApplicants,

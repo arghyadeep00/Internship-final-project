@@ -3,9 +3,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { useUserGlobal } from "../../context/UserContext";
 import statusColor from "../../styles/statusColor";
 
-
 const AppliedJobs = () => {
-
   const { appliedJobs } = useUserGlobal();
 
   return (
@@ -41,9 +39,15 @@ const AppliedJobs = () => {
                   <td className="p-4 font-medium">{jobs?.job?.title}</td>
                   <td className="p-4 font-medium">{jobs?.job?.jobType}</td>
                   <td className="p-4 font-medium">{jobs?.job?.location}</td>
-                  <td className="p-4">{new Date(jobs?.createdAt).toLocaleDateString("en-IN")}</td>
-                  <td className="p-4">{new Date(jobs?.job?.closingDate).toLocaleDateString("en-IN")}</td>
-                 
+                  <td className="p-4">
+                    {new Date(jobs?.createdAt).toLocaleDateString("en-IN")}
+                  </td>
+                  <td className="p-4">
+                    {new Date(jobs?.job?.closingDate).toLocaleDateString(
+                      "en-IN",
+                    )}
+                  </td>
+
                   <td className="p-4">
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${statusColor[jobs.status]}`}
