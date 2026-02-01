@@ -11,7 +11,7 @@ const JobProfile = () => {
 
   const fetchJobs = async () => {
     try {
-      setLoading(true);
+
       const response = await api.get("/job/all-jobs");
       setJobs(response.data.resultData);
 
@@ -21,8 +21,6 @@ const JobProfile = () => {
       }
     } catch (error) {
       toast.error("Fetching job error");
-    } finally {
-      setLoading(false);
     }
   };
   const fetchAppliedJobs = async () => {
@@ -30,18 +28,21 @@ const JobProfile = () => {
       const res = await api.get("/job/fetch-applied-jobs");
       setAppliedJobs(res.data.resultData);
     } catch (error) {
-     toast.error(error.response.data.message || "Job fetch error");
+      toast.error(error.response.data.message || "Job fetch error");
     }
   };
 
   const applyJob = async (id) => {
     try {
+      setLoading(true)
       const response = await api.post("/job/apply-job", { id });
       toast.success(response.data.message);
       fetchJobs();
       fetchAppliedJobs();
     } catch (error) {
       toast.error(error.response.data.message || "Can't post job");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -78,10 +79,10 @@ const JobProfile = () => {
                   Published:{" "}
                   {job.createdAt
                     ? new Date(job.createdAt).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })
                     : ""}{" "}
                 </p>
               </div>
@@ -119,13 +120,13 @@ const JobProfile = () => {
                   Closing:{" "}
                   {selectedJob.closingDate
                     ? new Date(selectedJob.closingDate).toLocaleDateString(
-                        "en-IN",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        },
-                      )
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      },
+                    )
                     : ""}{" "}
                 </div>
               </div>
@@ -150,9 +151,12 @@ const JobProfile = () => {
                 ) : (
                   <button
                     onClick={() => applyJob(selectedJob._id)}
-                    className="px-4 py-2 mt-3 rounded bg-purple-500 font-semibold text-white hover:bg-purple-600"
+                    className={`px-4 py-2 mt-3 rounded  font-semibold text-white hover:bg-purple-600 ${loading ? "bg-purple-600" : "bg-purple-500"}`}
+                    disabled={loading}
                   >
-                    Apply now
+                    {
+                      loading ? "Applying..." : "Apply now"
+                    }
                   </button>
                 )}
               </div>

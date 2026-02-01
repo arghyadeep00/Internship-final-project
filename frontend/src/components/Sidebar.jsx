@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { House } from "lucide-react";
+import { House, IdCardLanyard } from "lucide-react";
 import { BriefcaseBusiness } from "lucide-react";
 import { FileUser } from "lucide-react";
 import { UserPen } from "lucide-react";
-import { Settings } from "lucide-react";
 import { LayoutGrid } from "lucide-react";
 import { Layers2 } from "lucide-react";
 
@@ -19,6 +18,7 @@ const Sidebar = () => {
         path: "/admin/applications",
       },
       { icon: <Layers2 />, name: "Shortlisted", path: "/admin/shortlisted" },
+      { icon: <IdCardLanyard />, name: "Employees", path: "/admin/employee" },
 
       {
         icon: <BriefcaseBusiness />,

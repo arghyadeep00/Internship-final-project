@@ -6,7 +6,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import UserDashboard from "./pages/user/UserDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Shortlisted from "./pages/admin/Shortlisted";
-
+import HiredEmployee from './pages/admin/HiredEmployee'
 import JobManagement from "./pages/admin/JobManagement";
 
 import Profile from "./pages/user/Profile";
@@ -49,6 +49,7 @@ const App = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="applications" element={<Applications />} />
           <Route path="shortlisted" element={<Shortlisted />} />
+          <Route path="employee" element={<HiredEmployee />} />
           <Route path="job-management" element={<JobManagement />} />
           <Route path="profile" element={<AdminProfile />} />
           <Route path="user-profile/:id" element={<UserDetails />} />
