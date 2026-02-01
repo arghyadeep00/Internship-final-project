@@ -1,5 +1,6 @@
 import Application from "../models/Application.js";
 import User from "../models/User.js";
+import transporter from "../services/nodemailer.js";
 /* SUBMIT APPLICATION */
 export const submitApplication = async (req, res) => {
   try {
@@ -66,17 +67,83 @@ export const applications = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-    const { status, applicationId } = req.body;
+    const htmlTemplate = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+</head>
+<body style="margin:0;padding:0;background-color:#f2f4f8;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f2f4f8;padding:20px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #e5e7eb;">
+          
+          <tr>
+            <td align="center" style="background:#111827;padding:20px;color:#ffffff;">
+              <h2 style="margin:0;font-size:22px;">Veridia.io</h2>
+            </td>
+          </tr>
 
+          <tr>
+            <td style="padding:30px;color:#333333;font-size:15px;line-height:1.6;">
+              <p>Dear <strong>Name</strong>,</p>
+
+              <p>
+                We are pleased to inform you that you have been <strong>selected for an Internship at Veridia.io</strong>.
+                Your performance during the selection process impressed our team.
+              </p>
+
+              <p>
+                Our HR team will contact you shortly with onboarding details, joining date,
+                and required documentation.
+              </p>
+
+              <p>
+                We look forward to working with you.
+              </p>
+
+              <p style="margin-top:20px;">
+                Best Regards,<br/>
+                <strong>HR Team</strong><br/>
+                Veridia.io
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="background:#f9fafb;padding:15px;font-size:12px;color:#6b7280;">
+              © 2026 Veridia.io. All rights reserved.
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+    const { status, applicationId, email } = req.body;
+
+    //update status application collection
     await Application.findByIdAndUpdate(applicationId, { status });
+    //send email to user
+    
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject:
+        "Congratulations! You’ve Been Selected for an Internship at Veridia",
+      html: htmlTemplate,
+    });
 
     return res.status(200).json({
       success: true,
       message: "status update success",
     });
-    
   } catch (error) {
-
+    console.log(error);
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });

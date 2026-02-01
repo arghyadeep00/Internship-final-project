@@ -41,13 +41,14 @@ const Applications = () => {
   };
 
   // change status
-  const updateStatus = async (status, applicationId) => {
+  const updateStatus = async (status, applicationId, email) => {
     try {
       const response = await api.patch("/application/update-status", {
         status,
         applicationId,
+        email,
       });
-      
+
       toast.success(response.data.message);
       fetchApplications();
     } catch (error) {
@@ -195,7 +196,7 @@ const Applications = () => {
                   <td className="px-4 py-3 text-blue-700 font-bold">
                     {e?.job?.title}
                   </td>
-                  <td className="px-4 py-3">{e?.user?.firstname}</td>
+                  <td className="px-4 py-3">{e?.user?.firstname} {e?.user?.middlename} {e?.user?.lastname}</td>
                   <td>{e?.user?.email}</td>
                   <td>{e?.user?.domain}</td>
                   {e?.user?.resume?.url ? (
@@ -332,7 +333,11 @@ const Applications = () => {
               </button>
               <button
                 onClick={() =>
-                  updateStatus("Shortlisted", selectedApplication._id)
+                  updateStatus(
+                    "Shortlisted",
+                    selectedApplication._id,
+                    selectedApplication.user.email,
+                  )
                 }
                 className="flex-1 py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"
               >
