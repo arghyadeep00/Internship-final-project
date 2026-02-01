@@ -41,12 +41,13 @@ const Applications = () => {
   };
 
   // change status
-  const updateStatus = async (status, applicationId, email) => {
+  const updateStatus = async (status, applicationId, email, firstname) => {
     try {
       const response = await api.patch("/application/update-status", {
         status,
         applicationId,
         email,
+        firstname
       });
 
       toast.success(response.data.message);
@@ -325,7 +326,11 @@ const Applications = () => {
             <div className="flex justify-between gap-3 mt-6">
               <button
                 onClick={() =>
-                  updateStatus("Rejected", selectedApplication._id)
+                  updateStatus("Rejected",
+                    selectedApplication._id,
+                    selectedApplication.user.email,
+                    selectedApplication.user.firstname,
+                  )
                 }
                 className="flex-1 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-600"
               >
@@ -337,6 +342,7 @@ const Applications = () => {
                     "Shortlisted",
                     selectedApplication._id,
                     selectedApplication.user.email,
+                    selectedApplication.user.firstname,
                   )
                 }
                 className="flex-1 py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"
