@@ -11,7 +11,7 @@ const Shortlisted = () => {
     try {
       const response = await api.get("/application/shortlisted-applicants");
       setApplications(response.data.resultData);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -30,32 +30,7 @@ const Shortlisted = () => {
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-xl shadow-sm  mb-6 flex flex-wrap gap-4">
-        <input
-          type="text"
-          placeholder="Search by name or email"
-          className=" rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-green-500"
-        />
 
-        <select className=" rounded-lg px-4 py-2 text-sm">
-          <option>Job Role</option>
-          <option>Frontend Developer</option>
-          <option>Backend Developer</option>
-          <option>Full Stack Developer</option>
-        </select>
-
-        <select className=" rounded-lg px-4 py-2 text-sm">
-          <option>Experience</option>
-          <option>0–1 Years</option>
-          <option>1–3 Years</option>
-          <option>3+ Years</option>
-        </select>
-
-        <button className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm hover:bg-green-700">
-          Filter
-        </button>
-      </div>
 
       {/* Shortlisted Table */}
       <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
@@ -88,7 +63,7 @@ const Shortlisted = () => {
                   <td className="px-4 py-3 text-blue-700 font-bold">
                     {e?.job?.title}
                   </td>
-                  <td className="px-4 py-3">{e?.user?.firstname}</td>
+                  <td className="px-4 py-3">{e?.user?.firstname} {e?.user?.middlename} {e?.user?.lastname}</td>
                   <td>{e?.user?.email}</td>
                   <td>{e?.user?.domain}</td>
                   {e?.user?.resume?.url ? (
@@ -108,7 +83,7 @@ const Shortlisted = () => {
                     <td>-</td>
                   )}
 
-                  <td>{e?.user?.experience || "-"}</td>
+                  <td>{e?.user?.experience} Year</td>
                   <td>
                     <span
                       className={`px-2 py-1 text-xs rounded ${statusColor[e?.status]}`}
@@ -131,7 +106,7 @@ const Shortlisted = () => {
                         userStatusUpdate(e._id);
                       }}
                     >
-                      Update Status
+                      Interview Date
                     </button>
                   </td>
                 </tr>
@@ -141,14 +116,7 @@ const Shortlisted = () => {
         )}
       </div>
 
-      {/* Pagination */}
-      <div className="mt-6 flex justify-end gap-2">
-        <button className="px-4 py-2  rounded-lg text-sm">Previous</button>
-        <button className="px-4 py-2  rounded-lg text-sm bg-green-600 text-white">
-          1
-        </button>
-        <button className="px-4 py-2  rounded-lg text-sm">Next</button>
-      </div>
+
     </DashboardLayout>
   );
 };

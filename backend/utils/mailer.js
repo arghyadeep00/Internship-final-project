@@ -1,5 +1,4 @@
 import loadTemplate from "./templateLoader.js"
-
 import transporter from "../services/nodemailer.js"
 
 const sendMail = async (to, subject, templateName, data) => {

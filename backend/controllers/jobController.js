@@ -1,5 +1,7 @@
 import Job from "../models/Job.js";
 import Application from "../models/Application.js";
+import sendMail from "../utils/mailer.js";
+import User from "../models/User.js";
 // function for new job post
 export const postJob = async (req, res) => {
   const {
@@ -101,11 +103,18 @@ export const applyJob = async (req, res) => {
       job: jobId,
     });
 
+    const user = await User.findById(userId).select("email firstname");
+
+    await sendMail(user.email, `We’ve Received Your Application for ${job.title}  at veridia`, "applicationSubmitted", {
+      name: user.firstname, date: new Date().toDateString()
+    })
+
     return res.status(201).json({
       success: true,
       message: "application successfully",
     });
   } catch (error) {
+    console.log(error)
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
