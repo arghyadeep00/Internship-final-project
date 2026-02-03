@@ -1,9 +1,44 @@
+import { useState } from "react";
 import { useAdminGlobal } from "../../context/AdminContext";
 import DashboardLayout from "../../layouts/DashboardLayout";
+import api from "../../services/api";
+import toast from "react-hot-toast";
 
 const AdminProfile = () => {
   const { adminDetails } = useAdminGlobal();
- 
+  const [updatePassword, setUpdatePassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [data, setData] = useState({
+    oldPassword: "",
+    newPassword: "",
+  })
+  const handleOnChange = async (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev, [name]: value
+    }))
+  }
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await api.post("/admin/password-change", {
+        data
+      })
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message || "Password change error")
+    } finally {
+      setLoading(false);
+      setData({})
+      setUpdatePassword(false)
+    }
+  }
+
+
   return (
     <DashboardLayout>
       <div className="p-6 max-w-8xl mx-auto">
@@ -41,7 +76,7 @@ const AdminProfile = () => {
                 <span className="font-medium text-gray-600">Phone:</span>{" "}
                 {adminDetails?.phone}
               </p>
-              
+
             </div>
           </div>
 
@@ -60,14 +95,56 @@ const AdminProfile = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mt-6">
-          <button className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Edit Profile
-          </button>
-          <button className="px-5 py-2 border border-gray-300 rounded hover:bg-gray-100">
+          <button className="px-5 py-2 border bg-purple-500 text-white border-gray-300 rounded hover:bg-purple-700"
+            onClick={() => setUpdatePassword(true)}
+          >
             Change Password
           </button>
         </div>
       </div>
+
+      {updatePassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setUpdatePassword(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-xl p-6">
+            <h2 className="text-lg font-semibold mb-6 text-gray-700">
+              Update Password
+            </h2>
+            <form className="flex flex-col gap-10 w-full" onSubmit={handlePasswordChange} >
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-semibold text-gray-600">Enter Old Password</label>
+                <input
+                  type="text"
+                  name="oldPassword"
+                  required
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter Old password"
+                  onChange={handleOnChange}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-semibold text-gray-600">Enter New Password</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  required
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter New Password"
+                  onChange={handleOnChange}
+                />
+              </div>
+              <div className="w-full"><button disabled={loading} className="w-full p-3 text-xl bg-purple-500 text-white rounded-xl hover:bg-purple-600" type="submit">{loading ? "Please wait" : "submit"}</button></div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </DashboardLayout>
   );
 };

@@ -6,6 +6,7 @@ import {
   updateApplicationStatus,
   fetchUser,
   adminProfile,
+  changePassword
 } from "../controllers/adminController.js";
 import { verifyToken, authorize } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -33,5 +34,9 @@ router.put(
 );
 
 router.get("/fetch-user/:id", verifyToken, authorize("admin"), fetchUser);
+
+// admin password change
+
+router.post("/password-change", verifyToken, authorize("admin"), changePassword);
 
 export default router;

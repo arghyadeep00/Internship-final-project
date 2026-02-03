@@ -26,7 +26,7 @@ const AdminLogin = () => {
       setAuthUser(response.data.user);
       navigate("/admin/dashboard");
     } catch (error) {
-      toast.error("Login error");
+      toast.error(error.response.data.message || "Login error");
     } finally {
       setLoading(false);
     }

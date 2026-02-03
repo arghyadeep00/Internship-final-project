@@ -4,35 +4,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
 
-  
-  useEffect(() => {
-    setEmployees([
-      {
-        _id: "1",
-        name: "Arjun Sharma",
-        email: "arjun@gmail.com",
-        phone: "+91 9876543210",
-        role: "Frontend Developer",
-        joinedDate: "2026-01-20",
-      },
-      {
-        _id: "2",
-        name: "Riya Das",
-        email: "riya@gmail.com",
-        phone: "+91 9123456780",
-        role: "Backend Developer",
-        joinedDate: "2026-01-18",
-      },
-    ]);
-  }, []);
-
-  const fetchEmployee = async()=>{
-    try {
-       
-    } catch (error) {
-      
-    }
-  }
+  // ************ this page use for future implement ************** //
 
   return (
     <DashboardLayout>
@@ -49,28 +21,19 @@ const Employee = () => {
                 <th className="p-3">Email</th>
                 <th className="p-3">Phone</th>
                 <th className="p-3">Role</th>
-                <th className="p-3">Joined Date</th>            
+                <th className="p-3">Joined Date</th>
               </tr>
             </thead>
 
             <tbody className="text-sm text-gray-700">
-              {employees.map((emp) => (
-                <tr
-                  key={emp._id}
-                  className="hover:bg-gray-50 transition"
-                >
-                  <td className="p-3">{emp.name}</td>
-                  <td className="p-3">{emp.email}</td>
-                  <td className="p-3">{emp.phone}</td>
-                  <td className="p-3">{emp.role}</td>
-                  <td className="p-3">
-                    {new Date(emp.joinedDate).toLocaleDateString()}
-                  </td>
 
-                  
-                </tr>
-              ))}
-
+              <tr className="hover:bg-gray-50 transition">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+              </tr>
               {employees.length === 0 && (
                 <tr>
                   <td colSpan="6" className="text-center p-6 text-gray-400">

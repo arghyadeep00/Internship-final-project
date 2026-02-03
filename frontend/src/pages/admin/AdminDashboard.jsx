@@ -113,7 +113,7 @@ const AdminDashboard = () => {
                     <td className="py-3 text-blue-700 font-bold">
                       {item?.job?.title}
                     </td>
-                    <td className="py-3">{item?.user?.firstname}</td>
+                    <td className="py-3">{item?.user?.firstname} {item?.user?.middlename} {item?.user?.lastname}</td>
                     <td className="py-3">{item?.user?.email}</td>
                     <td>{item?.user?.domain}</td>
                     <td>

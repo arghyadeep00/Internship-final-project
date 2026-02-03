@@ -3,6 +3,7 @@ import Admin from "../models/Admin.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+
 // REGISTER AMDIN ACCOUNT
 export const adminRegister = async (req, res) => {
   try {
@@ -150,3 +151,45 @@ export const adminProfile = async (req, res) => {
     });
   }
 };
+
+
+// ADMIN PASSWORD CHANGE
+
+export const changePassword = async (req, res) => {
+  try {
+
+    const { oldPassword, newPassword } = req.body.data;
+    const id = req.user.id;
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found"
+      })
+    }
+    // check old password
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password is incorrect"
+      })
+    }
+    // hash new passwrod
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    admin.password = hashedPassword;
+    await admin.save();
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Password Update Success"
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
