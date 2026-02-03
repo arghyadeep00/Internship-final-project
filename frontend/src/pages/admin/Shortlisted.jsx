@@ -3,32 +3,35 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import statusColor from "../../styles/statusColor";
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
 
 const Shortlisted = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [jobId, setJobId] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [applicationId,setApplicationId]=useState(null);
+  const [applicationId, setApplicationId] = useState(null);
+
   const fetchShortListed = async () => {
     try {
       const response = await api.get("/application/shortlisted-applicants");
       setApplications(response.data.resultData);
-      console.log(response.data.resultData)
-    } catch (error) { }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     fetchShortListed();
   }, []);
 
-  // interview box open
+  // Interview form state
   const [interviewData, setInterviewData] = useState({
     date: "",
     time: "",
     mode: "",
     meetLink: "",
+    location: "",
     notes: "",
   });
 
@@ -45,9 +48,20 @@ const Shortlisted = () => {
     return new Date(`${date}T${time}`);
   };
 
-
   const handleSubmit = async () => {
     try {
+      if (!interviewData.date || !interviewData.time || !interviewData.mode) {
+        return toast.error("Please fill all required fields");
+      }
+
+      if (interviewData.mode === "Online" && !interviewData.meetLink) {
+        return toast.error("Please enter Google Meet link");
+      }
+
+      if (interviewData.mode === "Offline" && !interviewData.location) {
+        return toast.error("Please enter interview location");
+      }
+
       const interviewDate = combineDateTime(
         interviewData.date,
         interviewData.time
@@ -58,20 +72,29 @@ const Shortlisted = () => {
         jobId,
         interviewDate,
         interviewData,
-        applicationId
+        applicationId,
       });
-      toast.success(response.data.message)
+      
+      fetchShortListed();
+      toast.success(response.data.message);
       setShowModal(false);
+
+      // reset form
+      setInterviewData({
+        date: "",
+        time: "",
+        mode: "",
+        meetLink: "",
+        location: "",
+        notes: "",
+      });
     } catch (err) {
       console.log(err);
     }
   };
 
-
-
   return (
     <DashboardLayout>
-      {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">
           Shortlisted Candidates
@@ -81,15 +104,12 @@ const Shortlisted = () => {
         </p>
       </div>
 
-
-
-      {/* Shortlisted Table */}
-      <div className="bg-white rounded-xl shadow-sm  overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
         {applications.length === 0 ? (
-          <p className="text-center p-4">No shortlisted applicent present</p>
+          <p className="text-center p-4">No shortlisted applicant present</p>
         ) : (
           <table className="w-full text-sm">
-            <thead className=" bg-gray-50">
+            <thead className="bg-gray-50">
               <tr className="text-center text-gray-600">
                 <th className="px-4 py-3">Job Title</th>
                 <th className="px-4 py-3">Name</th>
@@ -99,7 +119,6 @@ const Shortlisted = () => {
                 <th className="px-4 py-3">Experience</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Applied On</th>
-
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -108,15 +127,19 @@ const Shortlisted = () => {
               {applications.map((e, key) => (
                 <tr
                   key={key}
-                  className="text-center odd:bg-white cursor-pointer  even:bg-gray-50 hover:bg-blue-50"
+                  className="text-center odd:bg-white even:bg-gray-50 hover:bg-blue-50 cursor-pointer"
                   onClick={() => navigate(`/admin/user-profile/${e.user._id}`)}
                 >
                   <td className="px-4 py-3 text-blue-700 font-bold">
                     {e?.job?.title}
                   </td>
-                  <td className="px-4 py-3">{e?.user?.firstname} {e?.user?.middlename} {e?.user?.lastname}</td>
+                  <td className="px-4 py-3">
+                    {e?.user?.firstname} {e?.user?.middlename}{" "}
+                    {e?.user?.lastname}
+                  </td>
                   <td>{e?.user?.email}</td>
                   <td>{e?.user?.domain}</td>
+
                   {e?.user?.resume?.url ? (
                     <td
                       className="underline text-blue-600 cursor-pointer"
@@ -124,7 +147,7 @@ const Shortlisted = () => {
                         event.stopPropagation();
                         window.open(
                           `https://docs.google.com/gview?url=${e?.user?.resume?.url}&embedded=true`,
-                          "_blank",
+                          "_blank"
                         );
                       }}
                     >
@@ -135,6 +158,7 @@ const Shortlisted = () => {
                   )}
 
                   <td>{e?.user?.experience} Year</td>
+
                   <td>
                     <span
                       className={`px-2 py-1 text-xs rounded ${statusColor[e?.status]}`}
@@ -142,6 +166,7 @@ const Shortlisted = () => {
                       {e?.status}
                     </span>
                   </td>
+
                   <td>
                     {new Date(e?.createdAt).toLocaleDateString("en-IN", {
                       day: "2-digit",
@@ -149,15 +174,16 @@ const Shortlisted = () => {
                       year: "numeric",
                     })}
                   </td>
-                  <td className="space-x-2">
+
+                  <td>
                     <button
                       className="text-green-600 hover:underline"
                       onClick={(event) => {
                         event.stopPropagation();
-                        setShowModal(true)
-                        setJobId(e?.job?._id)
-                        setUserId(e?.user?._id)
-                        setApplicationId(e?._id)
+                        setShowModal(true);
+                        setJobId(e?.job?._id);
+                        setUserId(e?.user?._id);
+                        setApplicationId(e?._id);
                       }}
                     >
                       Interview Date
@@ -169,127 +195,105 @@ const Shortlisted = () => {
           </table>
         )}
 
+        {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setShowModal(false)}
             />
 
-            {/* Modal Card */}
-            <div className="relative z-50 w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-8 animate-fadeIn">
+            <div className="relative z-50 w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-8">
+              <h2 className="text-2xl font-semibold mb-6">
+                Schedule Interview
+              </h2>
 
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-800">
-                    Schedule Interview
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Set date, time and meeting details for the candidate
-                  </p>
-                </div>
-              </div>
-
-              {/* Form */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Interview Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={interviewData.date}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg p-2.5 outline-none transition"
-                  />
-                </div>
+                <input
+                  type="date"
+                  name="date"
+                  value={interviewData.date}
+                  onChange={handleChange}
+                  className="border p-2.5 rounded-lg focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                />
 
                 {/* Time */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Interview Time
-                  </label>
-                  <input
-                    type="time"
-                    name="time"
-                    value={interviewData.time}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg p-2.5 outline-none transition"
-                  />
-                </div>
+                <input
+                  type="time"
+                  name="time"
+                  value={interviewData.time}
+                  onChange={handleChange}
+                  className="border p-2.5 rounded-lg focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                />
 
                 {/* Mode */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    Interview Mode
-                  </label>
-
-                  <div className="flex gap-4">
-                    {["Online", "Offline"].map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() =>
-                          setInterviewData({ ...interviewData, mode: m })
-                        }
-                        className={`px-4 py-2 rounded-lg border transition ${interviewData.mode === m
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "border-gray-300 text-gray-600 hover:bg-gray-100"
-                          }`}
-                      >
-                        {m}
-                      </button>
-                    ))}
-                  </div>
+                <div className="md:col-span-2 flex gap-4">
+                  {["Online", "Offline"].map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() =>
+                        setInterviewData({
+                          ...interviewData,
+                          mode: m,
+                          meetLink: "",
+                          location: "",
+                        })
+                      }
+                      className={`px-4 py-2 rounded-lg border ${interviewData.mode === m
+                        ? "bg-blue-600 text-white"
+                        : "border-gray-300"
+                        }`}
+                    >
+                      {m}
+                    </button>
+                  ))}
                 </div>
 
-
-                {/* Meet Link (full width) */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Google Meet Link
-                  </label>
+                {/* Conditional Field */}
+                {interviewData.mode === "Online" && (
                   <input
                     type="url"
                     name="meetLink"
+                    placeholder="Google Meet Link"
                     value={interviewData.meetLink}
                     onChange={handleChange}
-                    placeholder="https://meet.google.com/xyz-abc"
-                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg p-2.5 outline-none transition"
+                    className="md:col-span-2 border p-2.5 rounded-lg focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                   />
-                </div>
+                )}
 
-                {/* Notes (full width) */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Notes (Optional)
-                  </label>
-                  <textarea
-                    name="notes"
-                    value={interviewData.notes}
+                {interviewData.mode === "Offline" && (
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="Interview Location"
+                    value={interviewData.location}
                     onChange={handleChange}
-                    rows="3"
-                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg p-2.5 outline-none transition resize-none"
-                    placeholder="Add instructions or notes for the candidate..."
+                    className="md:col-span-2 border p-2.5 rounded-lg focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                   />
-                </div>
+                )}
+
+                {/* Notes */}
+                <textarea
+                  name="notes"
+                  placeholder="Notes (optional)"
+                  value={interviewData.notes}
+                  onChange={handleChange}
+                  className="md:col-span-2 border p-2.5 rounded-lg focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                />
               </div>
 
-              {/* Buttons */}
-              <div className="flex justify-end gap-3 mt-8">
+              <div className="flex justify-end gap-3 mt-6">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+                  className="border px-4 py-2 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg"
                 >
                   Save Interview
                 </button>
@@ -297,10 +301,8 @@ const Shortlisted = () => {
             </div>
           </div>
         )}
-
-
       </div>
-    </DashboardLayout >
+    </DashboardLayout>
   );
 };
 

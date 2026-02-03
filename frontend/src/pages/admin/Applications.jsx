@@ -8,6 +8,9 @@ import domain from "../../utils/domain";
 
 const Applications = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [rejectLoading, setRejectLoading] = useState(false);
+  const [shortlistLoading, setShortlistLoading] = useState(false);
 
   const [applications, setApplications] = useState([]);
   const [editStatus, setEditStatus] = useState(false);
@@ -27,7 +30,6 @@ const Applications = () => {
         },
       });
       setApplications(response.data.resultData);
-      // console.log(response);
     } catch (error) {
       console.log(error);
       toast.error("can't find");
@@ -43,6 +45,13 @@ const Applications = () => {
   // change status
   const updateStatus = async (status, applicationId, email, firstname) => {
     try {
+      setLoading(true);
+      if (status === "Shortlisted") {
+        setShortlistLoading(true);
+      }
+      if (status === "Rejected") {
+        setRejectLoading(true);
+      }
       const response = await api.patch("/application/update-status", {
         status,
         applicationId,
@@ -55,6 +64,9 @@ const Applications = () => {
     } catch (error) {
       toast.error("Status update filed");
     } finally {
+      setLoading(false)
+      setShortlistLoading(false);
+      setRejectLoading(false);
       setEditStatus(false);
     }
   };
@@ -280,7 +292,6 @@ const Applications = () => {
       {/* update status */}
       {editStatus && selectedApplication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setEditStatus(false)}
@@ -332,9 +343,12 @@ const Applications = () => {
                     selectedApplication.user.firstname,
                   )
                 }
+                disabled={loading}
                 className="flex-1 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-600"
               >
-                Reject
+                {
+                  rejectLoading ? 'Please Wait...' : 'Reject'
+                }
               </button>
               <button
                 onClick={() =>
@@ -346,8 +360,11 @@ const Applications = () => {
                   )
                 }
                 className="flex-1 py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"
+                disabled={loading}
               >
-                Shortlist
+                {
+                  shortlistLoading ? 'Please Wait...' : 'Shortlist'
+                }
               </button>
             </div>
 

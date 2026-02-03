@@ -14,7 +14,6 @@ const JobProfile = () => {
 
       const response = await api.get("/job/all-jobs");
       setJobs(response.data.resultData);
-
       // auto-select first job
       if (response.data.resultData.length > 0) {
         setSelectedJob(response.data.resultData[0]);
@@ -54,6 +53,21 @@ const JobProfile = () => {
   const isSelectedJobApplied = appliedJobs.some(
     (applied) => applied.job?._id === selectedJob?._id,
   );
+
+  // job description || highiring workflow || eligibility criteria tabs 
+  const [activeTab, setActiveTab] = useState("Job Description");
+
+  const jobTabs = [
+    {
+      title: "Job Description"
+    },
+    {
+      title: "Hiring Workflow"
+    },
+    {
+      title: "Eligibility Criteria"
+    }
+  ]
 
   return (
     <DashboardLayout>
@@ -134,15 +148,18 @@ const JobProfile = () => {
               {/* Tabs */}
               <div className="flex justify-between px-6 text-sm font-medium">
                 <div className="flex gap-6">
-                  <button className="py-3 border-b-2 border-blue-600 text-blue-600">
-                    Job Description
-                  </button>
-                  <button className="py-3 text-gray-500">
-                    Hiring Workflow
-                  </button>
-                  <button className="py-3 text-gray-500">
-                    Eligibility Criteria
-                  </button>
+                  {jobTabs.map((tab, key) => (
+                    <button
+                      key={key}
+                      onClick={() => setActiveTab(tab.title)}
+                      className={`py-3 border-b-2 ${activeTab === tab.title
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-gray-500"
+                        }`}
+                    >
+                      {tab.title}
+                    </button>
+                  ))}
                 </div>
                 {isSelectedJobApplied ? (
                   <div className="px-4 py-2 mt-3 rounded bg-green-100 text-green-700 font-semibold cursor-not-allowed">
@@ -162,37 +179,84 @@ const JobProfile = () => {
               </div>
 
               {/* Job Description */}
-              <div className="p-6 text-sm text-gray-700 space-y-4">
-                <div>
-                  <h4 className="font-semibold">Job Description</h4>
-                  <p>
-                    {selectedJob.description || "No description available."}
-                  </p>
-                </div>
+              {
+                activeTab === "Job Description" && (
+                  <div className="p-6 text-sm text-gray-700 space-y-4">
+                    <div>
+                      <h4 className="font-semibold">Job Description</h4>
+                      <p className="py-2">
+                        {selectedJob?.description}
+                      </p>
+                    </div>
 
-                <div>
-                  <h4 className="font-semibold">Required skills</h4>
-                  <p>{selectedJob.skills || "No description available."}</p>
-                </div>
+                    <div>
+                      <h4 className="font-semibold py-2">Required skills</h4>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {selectedJob?.skills?.split(",")
+                          .map((skill, key) => (
+                            <span
+                              key={key}
+                              className="px-3 py-1 rounded-lg text-sm font-medium
+                           bg-blue-100 text-blue-700
+                             border border-blue-200
+                           hover:bg-blue-200 transition"
+                            >
+                              {skill.trim()}
+                            </span>
+                          ))}
+                      </div>
 
-                <div>
-                  <h4 className="font-semibold">Responsibilities</h4>
-                  <ul className="list-disc ml-5 space-y-1">
-                    {selectedJob.responsibilities?.length > 0 ? (
-                      selectedJob.responsibilities.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))
-                    ) : (
-                      <li>No responsibilities listed</li>
-                    )}
-                  </ul>
-                </div>
-              </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold py-4">Responsibilities</h4>
+                      <ul className="list-disc ml-5 space-y-1">
+                        {selectedJob?.responsibilities?.split(",")
+                          .map((e, key) => (
+                            <li className="text-sm" key={key}>
+                              {e.trim()}
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  </div>
+                )
+              }
+              {/* Hiring Workflow */}
+              {
+                activeTab === "Hiring Workflow" && (
+                  <div className="p-6 text-sm text-gray-700 space-y-4">
+                    <div>
+                      <h4 className="font-semibold">Workflow</h4>
+                      <ul className="list-disc ml-5 space-y-1">
+                        {selectedJob?.hiringWorkflow?.split(",").map((e, key) => (
+                          <li className="text-sm my-3">{e.trim()}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )
+              }
+              {/* Eligibility Criteria */}
+              {
+                activeTab === "Eligibility Criteria" && (
+                  <div className="p-6 text-sm text-gray-700 space-y-4">
+                    <div>
+                      <h4 className="font-semibold">Eligibility Criteria</h4>
+                      <ul className="list-disc ml-5 space-y-1">
+                        {selectedJob?.eligibilityCriteria?.split(",").map((e, key) => (
+                          <li className="text-sm my-3">{e.trim()}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )
+              }
             </>
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </DashboardLayout >
   );
 };
 

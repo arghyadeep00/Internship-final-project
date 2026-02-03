@@ -66,26 +66,28 @@ export const AdminGlobalProvider = ({ children }) => {
     try {
       const response = await api.get("/application/total-applications");
       setTotalApplications(response.data.resultData);
-    } catch (error) {}
+    } catch (error) { }
   };
   const fetchPending = async () => {
     try {
       const response = await api.get("/application/pending");
       setPending(response.data.resultData);
-    } catch (error) {}
+    } catch (error) { }
   };
   const fetchShortlisted = async () => {
     try {
       const response = await api.get("/application/shortlisted");
       setShortlisted(response.data.resultData);
-    } catch (error) {}
+    } catch (error) { }
   };
   const fetchRejected = async () => {
     try {
       const response = await api.get("/application/rejected");
       setRejected(response.data.resultData);
-    } catch (error) {}
+    } catch (error) { }
   };
+
+
 
   useEffect(() => {
     fetchAdminDetails();

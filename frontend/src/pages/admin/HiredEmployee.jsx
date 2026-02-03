@@ -4,9 +4,8 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
 
-  // 🔹 Fetch from backend later
+  
   useEffect(() => {
-    // Example dummy data (replace with API)
     setEmployees([
       {
         _id: "1",
@@ -25,10 +24,15 @@ const Employee = () => {
         joinedDate: "2026-01-18",
       },
     ]);
-
-    // Later:
-    // axios.get("/api/employee/hired").then(res => setEmployees(res.data))
   }, []);
+
+  const fetchEmployee = async()=>{
+    try {
+       
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -38,15 +42,14 @@ const Employee = () => {
         </h1>
 
         <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-center border-collapse">
             <thead className="bg-gray-100 text-gray-600 text-sm">
               <tr>
                 <th className="p-3">Name</th>
                 <th className="p-3">Email</th>
                 <th className="p-3">Phone</th>
                 <th className="p-3">Role</th>
-                <th className="p-3">Joined Date</th>
-                <th className="p-3 text-center">Actions</th>
+                <th className="p-3">Joined Date</th>            
               </tr>
             </thead>
 
@@ -54,7 +57,7 @@ const Employee = () => {
               {employees.map((emp) => (
                 <tr
                   key={emp._id}
-                  className="border-t hover:bg-gray-50 transition"
+                  className="hover:bg-gray-50 transition"
                 >
                   <td className="p-3">{emp.name}</td>
                   <td className="p-3">{emp.email}</td>
@@ -64,17 +67,7 @@ const Employee = () => {
                     {new Date(emp.joinedDate).toLocaleDateString()}
                   </td>
 
-                  <td className="p-3 text-center space-x-2">
-                    <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs">
-                      View
-                    </button>
-                    <button className="px-3 py-1 bg-yellow-500 text-white rounded text-xs">
-                      Edit
-                    </button>
-                    <button className="px-3 py-1 bg-red-600 text-white rounded text-xs">
-                      Remove
-                    </button>
-                  </td>
+                  
                 </tr>
               ))}
 

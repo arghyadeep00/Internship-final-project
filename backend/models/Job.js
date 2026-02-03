@@ -27,9 +27,22 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    skills: [String],
+    hiringWorkflow: {
+      type: String,
+    },
+    eligibilityCriteria:
+    {
+      type: String,
+      trim: true
+    }
+    ,
+    skills: String,
     closingDate: {
       type: Date,
+    },
+    responsibilities:{
+      type:String,
+      trim:true
     },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,

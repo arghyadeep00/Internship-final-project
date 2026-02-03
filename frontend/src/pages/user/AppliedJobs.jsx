@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useUserGlobal } from "../../context/UserContext";
 import statusColor from "../../styles/statusColor";
@@ -9,7 +8,6 @@ const AppliedJobs = () => {
   return (
     <DashboardLayout>
       <div className="p-6">
-        {/* Page Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold">Applied Jobs</h1>
         </div>

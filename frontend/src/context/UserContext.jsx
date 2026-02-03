@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../services/api";
+import toast from "react-hot-toast";
 const UserGlobalContext = createContext();
 
 export const UserGlobalProvider = ({ children }) => {
@@ -12,12 +13,23 @@ export const UserGlobalProvider = ({ children }) => {
     setappliedJobs(response.data.resultData);
     setLoading(false);
   };
+  // fetch interview details
+  const [interviewDetails, setInterviewDetails] = useState([]);
+  const fetchInterviewDetails = async () => {
+    try {
+      const response = await api.get("/interview/interview-details");
+      setInterviewDetails(response.data.resultData);
+    } catch (error) {
+      toast.error("interview details error")
+    }
+  }
   useEffect(() => {
+    fetchInterviewDetails()
     fetchApplyJobs();
   }, []);
   return (
     <UserGlobalContext.Provider
-      value={{ appliedJobs, loading, setLoading, fetchApplyJobs }}
+      value={{ appliedJobs, interviewDetails, loading, setLoading, fetchApplyJobs }}
     >
       {children}
     </UserGlobalContext.Provider>

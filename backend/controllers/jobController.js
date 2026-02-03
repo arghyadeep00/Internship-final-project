@@ -149,7 +149,12 @@ export const updateJobDetails = async (req, res) => {
     jobType,
     location,
     numberOfOpening,
+    description,
+    hiringWorkflow,
+    eligibilityCriteria,
     experience,
+    skills,
+    responsibilities,
     closingDate,
   } = req.body;
   try {
@@ -159,7 +164,12 @@ export const updateJobDetails = async (req, res) => {
       jobType,
       location,
       numberOfOpening,
+      hiringWorkflow,
+      eligibilityCriteria,
+      skills,
+      description,
       experience,
+      responsibilities,
       closingDate,
     };
     Object.keys(updates).forEach(

@@ -69,7 +69,7 @@ export const updateStatus = async (req, res) => {
   try {
 
     const { status, applicationId, email, firstname } = req.body;
-    
+
     //update status application collection
     await Application.findByIdAndUpdate(applicationId, { status });
     //send email to user
@@ -256,7 +256,7 @@ export const rejected = async (req, res) => {
 
 export const shortlistedApplicants = async (req, res) => {
   try {
-    const response = await Application.find({ status: "Shortlisted" })
+    const response = await Application.find({ status: { $in: ["Shortlisted", "Scheduled"] } })
       .populate(
         "user",
         "firstname middlename lastname email phone domain skills experience resume",

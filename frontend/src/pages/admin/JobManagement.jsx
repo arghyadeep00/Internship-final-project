@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useForm } from "react-hook-form";
-import { Plus } from "lucide-react";
+import { Cross, Plus, X } from "lucide-react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { useAdminGlobal } from "../../context/AdminContext";
@@ -24,11 +24,13 @@ const JobManagement = () => {
   const onSubmit = async (data) => {
     try {
       const response = await api.post("/job/post-job", data);
+
       reset();
       toast.success(response.data.message);
       fetchJobs();
 
       setShowForm(false);
+
     } catch (error) {
       toast.error("Can't post job");
     }
@@ -47,7 +49,12 @@ const JobManagement = () => {
       jobType: jobDetails.jobType || "",
       location: jobDetails.location || "",
       numberOfOpening: jobDetails.numberOfOpening || "",
+      description: jobDetails.description || "",
+      eligibilityCriteria: jobDetails.eligibilityCriteria || "",
+      hiringWorkflow: jobDetails.hiringWorkflow || "",
+      skills: jobDetails.skills || "",
       experience: jobDetails.experience || "",
+      responsibilities: jobDetails.responsibilities || "",
       createdAt: jobDetails.createdAt || "",
       closingDate: jobDetails.closingDate || "",
     });
@@ -92,6 +99,9 @@ const JobManagement = () => {
     });
   };
 
+
+
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -124,10 +134,9 @@ const JobManagement = () => {
                   type="text"
                   placeholder="Job title"
                   className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 
-                    ${
-                      errors.jobtitle
-                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                        : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    ${errors.jobtitle
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                     }`}
                   {...register("jobtitle", {
                     required: "Job title is required",
@@ -147,13 +156,13 @@ const JobManagement = () => {
                   {...register("department")}
                 />
               </div>
+              {/* job type */}
               <div>
                 <select
-                  className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${
-                    errors.jobtype
-                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
-                  }`}
+                  className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.jobtype
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                    : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    }`}
                   {...register("jobtype", {
                     required: "Please select job type",
                   })}
@@ -173,16 +182,15 @@ const JobManagement = () => {
                   </p>
                 )}
               </div>
-
+              {/* experience */}
               <div>
                 <input
                   type="number"
                   placeholder="Experience 2+ year"
-                  className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${
-                    errors.experience
-                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
-                  }`}
+                  className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.experience
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                    : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    }`}
                   {...register("experience", {
                     required: "Experice is is required",
                   })}
@@ -194,14 +202,14 @@ const JobManagement = () => {
                 )}
               </div>
               <div>
+                {/* location  */}
                 <input
                   type="text"
                   placeholder="Location"
                   className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 
-                    ${
-                      errors.jobtitle
-                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                        : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    ${errors.jobtitle
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                     }`}
                   {...register("location", { required: "Location is require" })}
                 />
@@ -220,6 +228,45 @@ const JobManagement = () => {
                 />
               </div>
             </div>
+
+            {/* eligibilityCriteria */}
+            <textarea
+              rows="4"
+              placeholder="Eligibility Criteria (comma separated)"
+              className={`w-full mt-5 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.eligibilityCriteria
+                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                }`}
+              {...register("eligibilityCriteria", {
+                required: "Job description is required",
+              })}
+            ></textarea>
+            {errors.eligibilityCriteria && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.eligibilityCriteria.message}
+              </p>
+            )}
+
+            {/*  HiringWorkflow */}
+            <textarea
+              rows="4"
+              placeholder="Hiring Workflow"
+              className={`w-full mt-5 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.hiringWorkflow
+                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                }`}
+              {...register("hiringWorkflow", {
+                required: "Job description is required",
+              })}
+            ></textarea>
+            {errors.hiringWorkflow && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.hiringWorkflow.message}
+              </p>
+            )}
+
+
+            {/* closing Date   */}
             <div className="flex items-center justify-between mt-4 gap-1">
               <label
                 htmlFor="closingDate"
@@ -231,16 +278,25 @@ const JobManagement = () => {
                   id="closingDate"
                   name="closingDate"
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  {...register("closingdate")}
+                  className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.closingdate
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                    : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                    }`}
+                  {...register("closingdate", {
+                    required: "Closing date is require"
+                  })}
                 />{" "}
               </label>
             </div>
 
+            {/* job description */}
             <textarea
               rows="4"
               placeholder="Job Description"
-              className="w-full mt-4 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+              className={`w-full mt-5 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.jobdescription
+                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                }`}
               {...register("jobdescription", {
                 required: "Job description is required",
               })}
@@ -250,10 +306,15 @@ const JobManagement = () => {
                 {errors.jobdescription.message}
               </p>
             )}
+
+            {/* require skills */}
             <textarea
               rows="3"
               placeholder="Required Skills (comma separated)"
-              className="w-full mt-3 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+              className={`w-full mt-5 px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 ${errors.skills
+                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                }`}
               {...register("skills", {
                 required: "Skills are is required",
               })}
@@ -263,6 +324,7 @@ const JobManagement = () => {
                 {errors.skills.message}
               </p>
             )}
+            {/* cancle button */}
             <div className="flex justify-end gap-3 mt-4">
               <button
                 onClick={() => setShowForm(false)}
@@ -270,6 +332,8 @@ const JobManagement = () => {
               >
                 Cancel
               </button>
+
+              {/* publish job */}
               <button
                 type="submit"
                 className="bg-green-600 text-white font-semibold px-5 py-2 rounded-lg text-sm hover:bg-green-700 cursor-pointer"
@@ -313,7 +377,7 @@ const JobManagement = () => {
                   <td className="px-4 py-3">{e?.location}</td>
                   <td className="px-4 py-3">{e?.numberOfOpening}</td>
                   <td className="px-4 py-3">
-                    {e?.experience + " Year" || "-"}
+                    {e.experience || 0} Year
                   </td>
                   <td className="px-4 py-3">
                     {new Date(e?.createdAt).toLocaleDateString("en-IN", {
@@ -357,7 +421,10 @@ const JobManagement = () => {
                 </tr>
               ))}
             </tbody>
+          
           </table>
+        
+         
         </div>
       )}
       {/* edit posted job details  */}
@@ -478,7 +545,7 @@ const JobManagement = () => {
                   min="0"
                   className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
                   placeholder="e.g. 1"
-                  value={editJobDetatils.experience}
+                  value={editJobDetatils?.experience || 0}
                   onChange={(e) =>
                     setEditJobDetails({
                       ...editJobDetatils,
@@ -494,11 +561,12 @@ const JobManagement = () => {
                 <input
                   type="date"
                   className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  disabled
                   value={
                     editJobDetatils.createdAt
                       ? new Date(editJobDetatils.createdAt)
-                          .toISOString()
-                          .split("T")[0]
+                        .toISOString()
+                        .split("T")[0]
                       : ""
                   }
                   onChange={(e) =>
@@ -519,8 +587,8 @@ const JobManagement = () => {
                   value={
                     editJobDetatils.closingDate
                       ? new Date(editJobDetatils.closingDate)
-                          .toISOString()
-                          .split("T")[0]
+                        .toISOString()
+                        .split("T")[0]
                       : ""
                   }
                   onChange={(e) =>
@@ -544,6 +612,86 @@ const JobManagement = () => {
                   <option>Paused</option>
                 </select>
               </div>
+
+              {/* description */}
+              <div>
+                <label className="text-sm text-gray-600">Description</label>
+                <textarea
+                  role="4"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.description}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      description: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* hiringWorkflow */}
+              <div>
+                <label className="text-sm text-gray-600">Hiring Workflow</label>
+                <textarea
+                  role="4"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.hiringWorkflow}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      hiringWorkflow: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* eligibilityCriteria */}
+              <div>
+                <label className="text-sm text-gray-600">Eligibility Criteria</label>
+                <textarea
+                  role="4"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.eligibilityCriteria}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      eligibilityCriteria: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* skills */}
+              <div>
+                <label className="text-sm text-gray-600">Skills</label>
+                <textarea
+                  role="4"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.skills}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      skills: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              {/* Responsibilities */}
+              <div>
+                <label className="text-sm text-gray-600">Responsibilities</label>
+                <textarea
+                  role="4"
+                  className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-200 focus:ring-purple-500 focus:border-purple-500"
+                  value={editJobDetatils.responsibilities}
+                  onChange={(e) =>
+                    setEditJobDetails({
+                      ...editJobDetatils,
+                      responsibilities: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
               {/* Actions */}
               <div className="flex w-full justify-end col-span-1 md:col-span-2 lg:col-span-3 gap-3 mt-6">
                 <button
