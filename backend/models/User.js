@@ -74,9 +74,13 @@ const userSchema = new mongoose.Schema(
 
     domain: String,
 
-    experience: Number,
+    experience: {
+      companyName: { type: String },
+      year: { type: Number }
+    },
 
-    skills: [String],
+
+    skills: String,
 
     resume: {
       url: String,

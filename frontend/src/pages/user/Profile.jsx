@@ -43,8 +43,9 @@ const Profile = () => {
       });
 
       setSkillsForm({
-        skills: user.skills?.join(", ") || "",
-        experience: user.experience,
+        skills: user.skills || "",
+        companyName: user.experience.companyName || "",
+        year: user.experience.year || ""
       });
 
       setEducationForm(
@@ -185,6 +186,7 @@ const Profile = () => {
     }
   };
 
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6 relative">
@@ -290,26 +292,29 @@ const Profile = () => {
                 <SquarePen />
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {user?.skills?.map((skill, key) => (
+            <div className="flex flex-wrap">
+              {user?.skills?.split(",").map((e, key) => (
                 <span
                   key={key}
-                  className="px-3 py-1 text-sm flex gap-4 rounded"
+                  className="px-2 py-1 text-sm rounded"
                 >
-                  {skill.split(",").map((e, key) => (
-                    <p
-                      key={key}
-                      className=" bg-blue-100 px-2 py-1 rounded-md text-blue-700"
-                    >
-                      {e}
-                    </p>
-                  ))}
+                  <p className=" bg-blue-100 px-2 py-1 rounded-md text-blue-700">
+                    {e}
+                  </p>
                 </span>
               ))}
             </div>
-            <div className="mt-6 flex justify-between px-2">
-              <p className="text-gray-500">Experience</p>
-              <p>{user?.experience || 0} Year</p>
+            <div className="mt-6 px-2">
+              <div>
+                <p className="text-gray-500">Experience</p>
+              </div>
+              <div className="flex justify-between mt-2">
+
+                <p className="text-gray-900">{user?.experience?.companyName}</p>
+                <p>{user?.experience?.year}</p>
+
+              </div>
+
             </div>
           </div>
         </div>
@@ -619,13 +624,24 @@ const Profile = () => {
                   setSkillsForm({ ...skillsForm, skills: e.target.value })
                 }
               />
+
+              <input
+                type="text"
+                className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+                placeholder="Enter company name"
+                value={skillsForm.companyName}
+                onChange={(e) =>
+                  setSkillsForm({ ...skillsForm, companyName: e.target.value })
+                }
+              />
+
               <input
                 type="number"
                 className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-1 border-gray-300 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Enter your experience year"
-                value={skillsForm.experience}
+                placeholder="Enter experience year"
+                value={skillsForm.year}
                 onChange={(e) =>
-                  setSkillsForm({ ...skillsForm, experience: e.target.value })
+                  setSkillsForm({ ...skillsForm, year: e.target.value })
                 }
               />
             </div>

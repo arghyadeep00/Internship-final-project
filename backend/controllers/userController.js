@@ -110,27 +110,35 @@ export const personal = async (req, res) => {
 };
 export const skills = async (req, res) => {
   try {
-    const { skills, experience } = req.body;
-    const updateFields = {};
-    updateFields.skills = skills;
-    updateFields.experience = experience;
+    const { skills, companyName, year } = req.body;
+
+    const updateData = {};
+
+    if (skills) updateData.skills = skills;
+
+    if (companyName || year) {
+      updateData.experience = {
+        companyName,
+        year
+      };
+    }
 
     await User.findByIdAndUpdate(
       req.user.id,
-      { $set: updateFields },
-      { new: true },
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
 
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
     });
+
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
+    console.error(error);
+    return res.status(500).json({ success: false });
   }
+
 };
 export const education = async (req, res) => {
   try {
