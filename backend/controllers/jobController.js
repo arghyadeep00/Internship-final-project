@@ -2,6 +2,7 @@ import Job from "../models/Job.js";
 import Application from "../models/Application.js";
 import sendMail from "../utils/mailer.js";
 import User from "../models/User.js";
+import companyData from "../static/emailData.js";
 // function for new job post
 export const postJob = async (req, res) => {
   const {
@@ -106,8 +107,8 @@ export const applyJob = async (req, res) => {
     const user = await User.findById(userId).select("email firstname");
 
     await sendMail(user.email, `We’ve Received Your Application for ${job.title}  at veridia`, "applicationSubmitted", {
-      name: user.firstname, date: new Date().toDateString(), company: "Veridia", applicationId: application._id, role: job.title,
-      companyEmail: "hiringteam.veridia.io@gmail.com"
+      name: user.firstname, date: companyData.date, company: companyData.companyName, applicationId: application._id, role: job.title,
+      companyEmail: companyData.companyEmail
     })
 
     return res.status(201).json({
