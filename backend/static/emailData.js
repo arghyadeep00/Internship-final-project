@@ -5,3 +5,5 @@ const companyData = {
 }
 
 export default companyData;
+
+// to, subject, templateName, data

@@ -43,7 +43,7 @@ const Applications = () => {
   };
 
   // change status
-  const updateStatus = async (status, applicationId, email, firstname) => {
+  const updateStatus = async (status, applicationId, email, firstname, jobId) => {
     try {
       setLoading(true);
       if (status === "Shortlisted") {
@@ -56,7 +56,8 @@ const Applications = () => {
         status,
         applicationId,
         email,
-        firstname
+        firstname,
+        jobId
       });
 
       toast.success(response.data.message);
@@ -341,6 +342,7 @@ const Applications = () => {
                     selectedApplication._id,
                     selectedApplication?.user?.email,
                     selectedApplication?.user?.firstname,
+                    selectedApplication?.job?._id
                   )
                 }
                 disabled={loading}
@@ -357,6 +359,7 @@ const Applications = () => {
                     selectedApplication._id,
                     selectedApplication.user.email,
                     selectedApplication.user.firstname,
+                    selectedApplication?.job?._id
                   )
                 }
                 className="flex-1 py-2 rounded bg-green-500 text-white font-semibold hover:bg-green-600"

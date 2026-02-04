@@ -1,5 +1,7 @@
 import Application from "../models/Application.js";
+import Job from "../models/Job.js";
 import User from "../models/User.js";
+import companyData from "../static/emailData.js";
 import sendMail from "../utils/mailer.js";
 /* SUBMIT APPLICATION */
 export const submitApplication = async (req, res) => {
@@ -69,10 +71,12 @@ export const applications = async (req, res) => {
 export const updateStatus = async (req, res) => {
   try {
 
-    const { status, applicationId, email, firstname } = req.body;
+    const { status, applicationId, email, firstname, jobId } = req.body;
 
     //update status application collection
     await Application.findByIdAndUpdate(applicationId, { status });
+    // find job
+    const job = await Job.findById(jobId)
     //send email to user
 
     if (status === "Shortlisted") {
@@ -81,7 +85,10 @@ export const updateStatus = async (req, res) => {
         "Congratulations! You’ve Been Selected at Veridia",
         "selected", {
         name: firstname,
-        company: "veridia",
+        company: companyData.companyName,
+        date: companyData.date,
+        companyEmail: companyData.companyEmail,
+        role: job.title
       })
     }
 
@@ -92,7 +99,10 @@ export const updateStatus = async (req, res) => {
         'rejected',
         {
           name: firstname,
-          company: "Veridia"
+          company: companyData.companyName,
+          date: companyData.date,
+          companyEmail: companyData.companyEmail,
+          role: job.title
         })
     }
 
@@ -101,7 +111,7 @@ export const updateStatus = async (req, res) => {
       message: "status update success",
     });
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
