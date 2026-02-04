@@ -117,16 +117,22 @@ Final decision
 ### Backend
 -   Step `1`
 
-```git clone https://github.com/arghyadeep00/Internship-final-project.git```
+```
+git clone https://github.com/arghyadeep00/Internship-final-project.git
+```
 
 -   Step `2`
 
-``` cd InternShip Project```
+``` 
+cd InternShip Project
+```
 
 -   Step `3`
 now see two folder frontend and backend go to the backend folder
 
-``` cd backend ```
+``` 
+cd backend 
+```
 
 - Step `4` setup .env file
 
@@ -151,7 +157,9 @@ CLOUDINARY_API_SECRET=
 
 -   Step `5` run backend program
 
-``` npm run dev ```
+``` 
+npm run dev
+ ```
 
 🎉 successfully run backend server.
 
@@ -159,9 +167,13 @@ CLOUDINARY_API_SECRET=
 
 - Step `6` now go to frontend folder
 
-```cd frontend```
-
-```npm run dev```
+```
+cd frontend
+```
+-   Step `7` run frontend program
+```
+npm run dev
+```
 
 🎉 successfully run frontend server.
 
