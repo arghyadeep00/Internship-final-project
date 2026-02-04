@@ -1,6 +1,6 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useUserGlobal } from "../../context/UserContext";
-import { useEffect } from "react";
+
 const UserDashboard = () => {
 
   const { appliedJobs, interviewDetails } = useUserGlobal();
@@ -61,9 +61,8 @@ const UserDashboard = () => {
                       <p className="text-lg font-semibold text-gray-700">
                         No Applications Yet
                       </p>
-                      <p className="text-sm text-gray-500">
-                        You haven’t applied to any jobs. Start exploring and apply to
-                        opportunities!
+                      <p className="text-xl text-yellow-500">
+                        Please complete your profile otherwise you will be rejected !
                       </p>
                     </div>
                   </td>

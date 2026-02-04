@@ -11,6 +11,7 @@ const Shortlisted = () => {
   const [jobId, setJobId] = useState(null);
   const [userId, setUserId] = useState(null);
   const [applicationId, setApplicationId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchShortListed = async () => {
     try {
@@ -66,7 +67,7 @@ const Shortlisted = () => {
         interviewData.date,
         interviewData.time
       );
-
+      setLoading(true);
       const response = await api.post("/interview/schedule", {
         applicantId: userId,
         jobId,
@@ -74,7 +75,7 @@ const Shortlisted = () => {
         interviewData,
         applicationId,
       });
-      
+
       fetchShortListed();
       toast.success(response.data.message);
       setShowModal(false);
@@ -89,7 +90,10 @@ const Shortlisted = () => {
         notes: "",
       });
     } catch (err) {
-      console.log(err);
+      console.log(err)
+      toast.error(err.response.data.message || "interview schedule failed")
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,7 +161,7 @@ const Shortlisted = () => {
                     <td>-</td>
                   )}
 
-                  <td>{e?.user?.experience} Year</td>
+                  <td>{e?.user?.experience?.year || 0} Year</td>
 
                   <td>
                     <span
@@ -293,9 +297,13 @@ const Shortlisted = () => {
                 </button>
                 <button
                   onClick={handleSubmit}
+                  disabled={loading}
                   className="bg-blue-600 text-white px-6 py-2 rounded-lg"
                 >
                   Save Interview
+                  {
+                    loading ? "Please wait..." : "Save Interview"
+                  }
                 </button>
               </div>
             </div>
