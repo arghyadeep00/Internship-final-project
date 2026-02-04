@@ -65,6 +65,7 @@ export const applications = async (req, res) => {
   }
 };
 
+// update status for shortlist and rejected
 export const updateStatus = async (req, res) => {
   try {
 

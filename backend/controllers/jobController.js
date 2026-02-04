@@ -98,7 +98,7 @@ export const applyJob = async (req, res) => {
         message: "Job is expired",
       });
     }
-    await Application.create({
+    const application = await Application.create({
       user: userId,
       job: jobId,
     });
@@ -106,7 +106,8 @@ export const applyJob = async (req, res) => {
     const user = await User.findById(userId).select("email firstname");
 
     await sendMail(user.email, `We’ve Received Your Application for ${job.title}  at veridia`, "applicationSubmitted", {
-      name: user.firstname, date: new Date().toDateString()
+      name: user.firstname, date: new Date().toDateString(), company: "Veridia", applicationId: application._id, role: job.title,
+      companyEmail: "hiringteam.veridia.io@gmail.com"
     })
 
     return res.status(201).json({

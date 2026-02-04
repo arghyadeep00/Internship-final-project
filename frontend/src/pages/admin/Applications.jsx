@@ -159,8 +159,8 @@ const Applications = () => {
             Job Role
           </option>
           {domain.map((item, key) => (
-            <option value={item.value} key={key}>
-              {item.title}
+            <option value={item?.value} key={key}>
+              {item?.title}
             </option>
           ))}
         </select>
@@ -229,7 +229,7 @@ const Applications = () => {
                     <td>-</td>
                   )}
 
-                  <td>{e?.user?.experience || "-"}</td>
+                  <td>{e?.user?.experience?.year || 0} Year</td>
                   <td>
                     <span
                       className={`px-2 py-1 text-xs rounded ${statusColor[e?.status]}`}
@@ -339,8 +339,8 @@ const Applications = () => {
                 onClick={() =>
                   updateStatus("Rejected",
                     selectedApplication._id,
-                    selectedApplication.user.email,
-                    selectedApplication.user.firstname,
+                    selectedApplication?.user?.email,
+                    selectedApplication?.user?.firstname,
                   )
                 }
                 disabled={loading}

@@ -85,23 +85,22 @@ const UserProfile = () => {
               label="Date of Birth"
               value={new Date(user?.dob).toLocaleDateString("en-IN")}
             />
+            {
+              user?.experience && <Info label="Experience" value={`${user?.experience?.year} Years at ${user?.experience?.companyName}`} />
+            }
 
-            <Info label="Experience" value={`${user.experience} Years`} />
           </Section>
 
           {/* Skills */}
           <Section title="Skills">
-            <div className="flex gap-2 flex-wrap">
-              {user?.skills?.map((skill, index) => (
-                <span key={index} className="px-3 py-1 text-sm flex gap-4">
-                  {skill?.split(",").map((e, key) => (
-                    <p
-                      key={key}
-                      className="text-blue-800 bg-blue-100 px-2 rounded-sm"
-                    >
-                      {e}
-                    </p>
-                  ))}
+            <div className="flex flex-wrap">
+              {user?.skills?.split(",").map((skill, index) => (
+                <span key={index} className="px-2 py-1 text-sm">
+
+                  <p className="text-blue-800 bg-blue-100 px-2 rounded-sm">
+                    {skill}
+                  </p>
+
                 </span>
               ))}
             </div>
