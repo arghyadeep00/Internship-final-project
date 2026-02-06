@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../services/api";
 
 const OtpBox = ({ visible, description, otpTarget, onClose, onVerified }) => {
@@ -7,7 +7,6 @@ const OtpBox = ({ visible, description, otpTarget, onClose, onVerified }) => {
   const [loading, setLoading] = useState(false);
 
   if (!visible) return null;
-  
 
   const verifyOtp = async () => {
     if (otp.length !== 6) return;
@@ -35,6 +34,7 @@ const OtpBox = ({ visible, description, otpTarget, onClose, onVerified }) => {
 
       {/* Modal Box */}
       <div className="relative bg-white w-[90%] max-w-md rounded-2xl shadow-xl p-6">
+
         <h3 className="text-xl font-semibold text-purple-600 mb-2">
           {description[0]?.title}
         </h3>
@@ -53,6 +53,7 @@ const OtpBox = ({ visible, description, otpTarget, onClose, onVerified }) => {
 
         {/* Actions */}
         <div className="flex justify-end gap-3 mt-4">
+
           <button
             className="px-4 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 cursor-pointer"
             onClick={onClose}

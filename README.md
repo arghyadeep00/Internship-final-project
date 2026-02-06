@@ -26,7 +26,8 @@ hiring workflow from application to hiring.
 
 -   User Registration & Login
 -   User recover forgot password
--   Profile with education, skills, experience, resume
+-   Profile with education, skills, experience
+-   File upload Resume (pdf) Avatar (jpg, png)
 -   Browse and apply to jobs
 -   Track application status
 -   Email notification on application

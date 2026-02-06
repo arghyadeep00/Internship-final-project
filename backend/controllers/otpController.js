@@ -12,7 +12,7 @@ export const sendOtp = async (req, res) => {
 
     // generate otp
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
 
     await Otp.deleteMany({ value });
     await Otp.create({ value, otp, expiresAt });
@@ -23,7 +23,7 @@ export const sendOtp = async (req, res) => {
         from: process.env.EMAIL_USER,
         to: value,
         subject: "Your OTP Code",
-        html: `<h2>Your OTP is <b>${otp}</b></h2><p>Valid for 5 minutes</p>`,
+        html: `<h2>Your OTP is <b>${otp}</b></h2><p>Valid for 2 minutes</p>`,
       });
     }
 
@@ -38,7 +38,7 @@ export const sendOtp = async (req, res) => {
 
   
       await twilioClient.messages.create({
-        body: `Your OTP is ${otp}. It expires in 3 minutes.`,
+        body: `Your OTP is ${otp}. It expires in 2 minutes.`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: countryCode + value,
       });
