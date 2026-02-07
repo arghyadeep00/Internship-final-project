@@ -180,7 +180,18 @@ npm run dev
 
 
 
-------------------------------------------------------------------------
+-----------------------------------------------------------------------
+
+## Future Improvements
+
+-   Increase UI
+-   Interview controller
+-   Employee list
+-   Mobile application
+-   More responsive UI
+-   Multi language support
+
+-----------------------------------------------------------------------
 
 ## 👨‍💻 Author
 

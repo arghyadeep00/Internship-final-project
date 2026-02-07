@@ -45,7 +45,7 @@ export const avatar = async (req, res) => {
 export const profile = async (req, res) => {
   try {
     const { firstname, middlename, lastname } = req.body;
-    console.log(middlename);
+
     const updateFields = {};
 
     if (firstname !== undefined) updateFields.firstname = firstname;

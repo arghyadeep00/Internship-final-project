@@ -30,7 +30,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api", otpRoutes);
 app.use("/api", jobRoutes);
-app.use("/api/interview",interviewRoute)
+app.use("/api/interview",interviewRoute);
 app.use("/api/forgot-password", passwordRoute);
 
 app.listen(port, () => {
